@@ -80,6 +80,8 @@ else ()
             vec3.h
             color.cpp
             color.h
+            ray.cpp
+            ray.h
     )
 endif ()
 
