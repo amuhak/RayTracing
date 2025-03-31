@@ -78,6 +78,8 @@ else ()
             main.cpp
             vec3.cpp
             vec3.h
+            color.cpp
+            color.h
     )
 endif ()
 
