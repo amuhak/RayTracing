@@ -76,6 +76,8 @@ if (GPU STREQUAL "ON")
 else ()
     add_executable(RayTracing
             main.cpp
+            vec3.cpp
+            vec3.h
     )
 endif ()
 
