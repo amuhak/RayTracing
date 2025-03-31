@@ -20,15 +20,15 @@ inline vec3 operator*(const vec3 &u, const vec3 &v) {
     return {u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2]};
 }
 
-inline vec3 operator*(type t, const vec3 &v) {
+inline vec3 operator*(const double t, const vec3 &v) {
     return {t * v.e[0], t * v.e[1], t * v.e[2]};
 }
 
-inline vec3 operator*(const vec3 &v, type t) {
+inline vec3 operator*(const vec3 &v, const type t) {
     return t * v;
 }
 
-inline vec3 operator/(const vec3 &v, type t) {
+inline vec3 operator/(const vec3 &v, const type t) {
     return (1 / t) * v;
 }
 
