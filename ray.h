@@ -22,7 +22,7 @@ public:
     }
 
 private:
-    vec3 orig;
+    point3 orig;
     vec3 dir;
 };
 
