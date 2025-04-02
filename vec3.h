@@ -52,27 +52,27 @@ public:
     [[nodiscard]] type length_squared() const {
         return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
     }
-
-    friend std::ostream &operator<<(std::ostream &out, const vec3 &v);
-
-    friend vec3 operator+(const vec3 &u, const vec3 &v);
-
-    friend vec3 operator-(const vec3 &u, const vec3 &v);
-
-    friend vec3 operator*(const vec3 &u, const vec3 &v);
-
-    friend vec3 operator*(double t, const vec3 &v);
-
-    friend vec3 operator*(const vec3 &v, type t);
-
-    friend vec3 operator/(const vec3 &v, type t);
-
-    friend type dot(const vec3 &u, const vec3 &v);
-
-    friend vec3 cross(const vec3 &u, const vec3 &v);
-
-    friend vec3 unit_vector(const vec3 &v);
 };
+
+std::ostream &operator<<(std::ostream &out, const vec3 &v);
+
+vec3 operator+(const vec3 &u, const vec3 &v);
+
+vec3 operator-(const vec3 &u, const vec3 &v);
+
+vec3 operator*(const vec3 &u, const vec3 &v);
+
+vec3 operator*(double t, const vec3 &v);
+
+vec3 operator*(const vec3 &v, type t);
+
+vec3 operator/(const vec3 &v, type t);
+
+type dot(const vec3 &u, const vec3 &v);
+
+vec3 cross(const vec3 &u, const vec3 &v);
+
+vec3 unit_vector(const vec3 &v);
 
 // point3 is just an alias for vec3, but useful for geometric clarity in the code.
 using point3 = vec3;
