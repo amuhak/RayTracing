@@ -77,11 +77,8 @@ else ()
     add_executable(RayTracing
             main.cpp
             vec3.cpp
-            vec3.h
             color.cpp
-            color.h
             ray.cpp
-            ray.h
     )
 endif ()
 
