@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include "color.h"
 #include "ray.h"
@@ -6,15 +7,15 @@
 
 double hit_sphere(const point3 &center, double radius, const ray &r) {
     vec3 oc = center - r.origin();
-    auto a = dot(r.direction(), r.direction());
-    auto b = -2.0 * dot(r.direction(), oc);
-    auto c = dot(oc, oc) - radius * radius;
-    auto discriminant = b * b - 4 * a * c;
+    auto a = r.direction().length_squared();
+    auto h = dot(r.direction(), oc);
+    auto c = oc.length_squared() - radius * radius;
+    auto discriminant = h * h - a * c;
 
     if (discriminant < 0) {
         return -1.0;
     }
-    return (-b - std::sqrt(discriminant)) / (2.0 * a);
+    return (h - std::sqrt(discriminant)) / a;
 }
 
 color ray_color(const ray &r) {
@@ -33,6 +34,7 @@ int main() {
     std::ofstream file;
     file.open("image.ppm");
 
+    std::string ans = "";
 
     constexpr double aspect_ratio = 16.0 / 9.0;
     constexpr int image_width = 400;
@@ -62,21 +64,24 @@ int main() {
     auto pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
     // Render
-
-    std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
-    file << "P3\n" << image_width << ' ' << image_height << "\n255\n";
-
+    ans.reserve(image_width * image_height * 16);
+    ans += "P3\n"; // PPM header
+    ans += std::to_string(image_width) + ' ' + std::to_string(image_height) + "\n"; // Image dimensions
+    ans += "255\n"; // Max color value
     for (int j = 0; j < image_height; ++j) {
-        // std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::endl;
+        std::cout << "\rScanlines remaining: " << std::setw(16) << image_height - j << "   " << std::flush;
         for (int i = 0; i < image_width; i++) {
             auto pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
             auto ray_direction = pixel_center - camera_center;
             ray r(camera_center, ray_direction);
             color pixel_color = ray_color(r);
-            write_color(std::cout, file, pixel_color);
+            write_color(ans, pixel_color);
         }
     }
 
     std::clog << "\rDone.                 \n";
+    // std::cout << ans;
+    file << ans;
     file.close();
+    std::cout << ans.size() << " bytes written to image.ppm" << std::endl;
 }
