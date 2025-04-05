@@ -58,7 +58,7 @@ else ()
     if (CMAKE_CXX_COMPILER_ID MATCHES ".*[Ii][Nn][Tt][Ee][Ll].*")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -march=native")
     elseif (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -g -march=native -flto -fuse-linker-plugin -fprefetch-loop-arrays -fopenmp -fopenmp-simd")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -g -march=native  -flto -fwhole-program -fuse-linker-plugin -fprefetch-loop-arrays -fopenmp -fopenmp-simd")
     else ()
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Ofast -g -march=native")
     endif ()
@@ -71,14 +71,14 @@ endif ()
 
 if (GPU STREQUAL "ON")
     add_executable(RayTracing
-            main.cu
+            src/main.cu
     )
 else ()
     add_executable(RayTracing
-            main.cpp
-            vec3.cpp
-            color.cpp
-            ray.cpp
+            src/main.cpp
+            src/vec3.cpp
+            src/color.cpp
+            src/ray.cpp
     )
 endif ()
 
