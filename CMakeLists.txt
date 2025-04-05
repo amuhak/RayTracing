@@ -79,6 +79,7 @@ else ()
             src/vec3.cpp
             src/color.cpp
             src/ray.cpp
+            src/hittable.cpp
     )
 endif ()
 
