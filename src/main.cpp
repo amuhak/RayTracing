@@ -6,11 +6,11 @@
 #include "vec3.h"
 
 double hit_sphere(const point3 &center, double radius, const ray &r) {
-    vec3 oc = center - r.origin();
-    auto a = r.direction().length_squared();
-    auto h = dot(r.direction(), oc);
-    auto c = oc.length_squared() - radius * radius;
-    auto discriminant = h * h - a * c;
+    const vec3 oc = center - r.origin();
+    const auto a = r.direction().length_squared();
+    const auto h = dot(r.direction(), oc);
+    const auto c = oc.length_squared() - radius * radius;
+    const auto discriminant = h * h - a * c;
 
     if (discriminant < 0) {
         return -1.0;
