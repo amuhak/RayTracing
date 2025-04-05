@@ -39,11 +39,11 @@ void write_color(std::string &ans, const color &pixel_color) {
     const auto b = pixel_color.z();
 
     // Translate the [0,1] component values to the byte range [0,255].
-    auto rbyte = static_cast<int>(255.999 * r);
-    auto gbyte = static_cast<int>(255.999 * g);
-    auto bbyte = static_cast<int>(255.999 * b);
+    const auto rbyte = static_cast<int>(255.999 * r);
+    const auto gbyte = static_cast<int>(255.999 * g);
+    const auto bbyte = static_cast<int>(255.999 * b);
 
     char buffer[16];
-    int n = std::snprintf(buffer, sizeof(buffer), "%d %d %d\n", rbyte, gbyte, bbyte);
-    ans.append(buffer, n);
+    const int n = std::snprintf(buffer, sizeof(buffer), "%d %d %d\n", rbyte, gbyte, bbyte);
+    ans.append(buffer, static_cast<size_t>(n));
 }
