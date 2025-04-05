@@ -80,6 +80,7 @@ else ()
             src/color.cpp
             src/ray.cpp
             src/hittable.cpp
+            src/sphere.cpp
     )
 endif ()
 
