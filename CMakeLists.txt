@@ -81,6 +81,8 @@ else ()
             src/ray.cpp
             src/hittable.cpp
             src/sphere.cpp
+            src/hittable_list.cpp
+            src/hittable_list.h
     )
 endif ()
 
