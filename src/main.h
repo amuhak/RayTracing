@@ -7,13 +7,13 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include "color.h"
-#include "hittable.h"
-#include "hittable_list.h"
-#include "ray.h"
-#include "vec3.h"
-#include "rtweekend.h"
-#include "sphere.h"
-#include "interval.h"
+#include "color.hpp"
+#include "hittable.hpp"
+#include "hittable_list.hpp"
+#include "ray.hpp"
+#include "vec3.hpp"
+#include "rtweekend.hpp"
+#include "sphere.hpp"
+#include "interval.hpp"
 
 #endif //MAIN_H

@@ -2,7 +2,7 @@
 // Created by amuhak on 3/31/2025.
 //
 
-#include "color.h"
+#include "color.hpp"
 
 void write_color(std::ostream &out, const color &pixel_color) {
     const auto r = pixel_color.x();

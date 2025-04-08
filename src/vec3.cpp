@@ -2,7 +2,7 @@
 // Created by amuhak on 3/31/2025.
 //
 
-#include "vec3.h"
+#include "vec3.hpp"
 
 std::ostream &operator<<(std::ostream &out, const vec3 &v) {
     return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2];

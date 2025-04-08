@@ -4,7 +4,7 @@
 
 #ifndef COLOR_H
 #define COLOR_H
-#include "vec3.h"
+#include "vec3.hpp"
 
 using color = vec3;
 

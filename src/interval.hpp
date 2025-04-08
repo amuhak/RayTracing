@@ -4,7 +4,7 @@
 
 #ifndef INTERVAL_H
 #define INTERVAL_H
-#include "rtweekend.h"
+#include "rtweekend.hpp"
 
 
 class interval {

@@ -5,8 +5,8 @@
 #ifndef HITTABLE_H
 #define HITTABLE_H
 
-#include "ray.h"
-#include "interval.h"
+#include "ray.hpp"
+#include "interval.hpp"
 
 class hit_record {
 public:
