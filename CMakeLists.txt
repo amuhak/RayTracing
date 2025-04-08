@@ -83,6 +83,7 @@ else ()
             src/sphere.cpp
             src/hittable_list.cpp
             src/hittable_list.h
+            src/rtweekend.h
     )
 endif ()
 
