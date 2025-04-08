@@ -11,9 +11,11 @@ class interval {
 public:
     double min, max;
 
-    interval() : min(+infinity), max(-infinity) {} // Default interval is empty
+    interval() : min(+infinity), max(-infinity) {
+    } // Default interval is empty
 
-    interval(const double min, const double max) : min(min), max(max) {}
+    interval(const double min, const double max) : min(min), max(max) {
+    }
 
     [[nodiscard]] double size() const {
         return max - min;
@@ -27,12 +29,7 @@ public:
         return min < x && x < max;
     }
 
-    static const interval empty;
-    static const interval universe;
+    static const interval empty, universe;
 };
-
-const interval interval::empty    = interval(+infinity, -infinity);
-const interval interval::universe = interval(-infinity, +infinity);
-
 
 #endif //INTERVAL_H
