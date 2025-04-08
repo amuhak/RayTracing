@@ -84,6 +84,9 @@ else ()
             src/hittable_list.cpp
             src/hittable_list.h
             src/rtweekend.h
+            src/interval.cpp
+            src/interval.h
+            src/main.h
     )
 endif ()
 
