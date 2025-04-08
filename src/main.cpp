@@ -1,13 +1,4 @@
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include "color.h"
-#include "hittable.h"
-#include "hittable_list.h"
-#include "ray.h"
-#include "vec3.h"
-#include "rtweekend.h"
-#include "sphere.h"
+#include "main.h"
 
 color ray_color(const ray &r, const hittable &world) {
     hit_record rec;
