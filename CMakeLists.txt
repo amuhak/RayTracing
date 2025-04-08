@@ -83,6 +83,8 @@ else ()
             src/sphere.cpp
             src/hittable_list.cpp
             src/interval.cpp
+            src/camera.cpp
+            src/grid.cpp
     )
 endif ()
 
