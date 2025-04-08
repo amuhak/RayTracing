@@ -6,7 +6,7 @@
 #define CAMERA_HPP
 #include "color.hpp"
 #include "hittable.hpp"
-#include "main.h"
+#include "main.hpp"
 #include "camera.hpp"
 
 
