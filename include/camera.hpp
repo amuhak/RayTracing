@@ -18,7 +18,7 @@ public:
     double aspect_ratio = 16.0 / 9.0; // Ratio of image width over height
     size_t image_width = 400; // Rendered image width in pixel count
 
-    void render(const hittable &world, int threads);
+    void render(const hittable &world, size_t threads);
 
 private:
     /* Private Camera Variables Here */
@@ -30,7 +30,9 @@ private:
 
     void initialize();
 
-    void render_pixel(int i, int j, const hittable &world, grid &img) const;
+    void render_range(size_t start, size_t end, const hittable &world, grid &img) const;
+
+    void render_pixel(size_t idx, const hittable &world, grid &img) const;
 
     [[nodiscard]] static color ray_color(const ray &r, const hittable &world);
 };

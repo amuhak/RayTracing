@@ -5,18 +5,18 @@
 
 #include "grid.hpp"
 
-void camera::render(const hittable &world, const int threads = 1) {
+void camera::render(const hittable &world, const size_t threads = 10) {
     initialize();
     std::ofstream file;
     file.open("image.ppm");
     grid img(image_width, image_height);
     file << "P3\n" << image_width << ' ' << image_height << "\n255\n";
     const size_t image_total{image_width * image_height};
-    for (size_t k = 0; k < image_total; k++) {
-        const int j{static_cast<int>(k / image_width)};
-        const int i{static_cast<int>(k % image_width)};
-        render_pixel(i, j, world, img);
+    const size_t size = image_total / threads;
+    for (size_t i = 0; i < image_total; i += size) {
+        render_range(i, std::min(i + size, image_total), world, img);
     }
+    // render_range(0, image_total, world, img);
     std::cout << "\nWriting image...     " << std::flush;
     img.write(file);
     std::cout << "\nDone.                 \n";
@@ -24,9 +24,15 @@ void camera::render(const hittable &world, const int threads = 1) {
     std::cout << img.data.size() << " bytes written to image.ppm" << std::endl;
 }
 
+void camera::render_range(const size_t start, const size_t end, const hittable &world, grid &img) const {
+    for (size_t i = start; i < end; i++) {
+        render_pixel(i, world, img);
+    }
+}
 
-
-void camera::render_pixel(const int i, const int j, const hittable &world, grid &img) const {
+void camera::render_pixel(const size_t idx, const hittable &world, grid &img) const {
+    const int j{static_cast<int>(idx / image_width)};
+    const int i{static_cast<int>(idx % image_width)};
     if (i == 0) {
         std::stringstream s;
         s << "\rWorking on scanline: " << std::setw(16) << j << "   " << std::flush;
