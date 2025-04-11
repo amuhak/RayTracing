@@ -15,16 +15,14 @@
 class grid {
 public:
     std::vector<color> data;
-    int width, height;
+    size_t width, height;
     size_t size;
 
-    grid(const int width, const int height) {
-        const auto w(static_cast<size_t>(width));
-        const auto h(static_cast<size_t>(height));
-        data.resize(w * h);
+    grid(const size_t width, const size_t height) {
+        data.resize(width * height);
         this->width = width;
         this->height = height;
-        this->size = w * h;
+        this->size = width * height;
     }
 
     void set(const int idx, const color &c) {
@@ -38,7 +36,7 @@ public:
      * @param c the color to set
      */
     void set(const int x, const int y, const color &c) {
-        set(x * width + y, c);
+        set(x * static_cast<int>(width) + y, c);
     }
 
     void write(std::ostream &out) const {
