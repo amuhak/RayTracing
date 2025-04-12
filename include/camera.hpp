@@ -18,7 +18,7 @@ public:
     double aspect_ratio = 16.0 / 9.0; // Ratio of image width over height
     size_t image_width = 400; // Rendered image width in pixel count
 
-    void render(const hittable &world, size_t threads);
+    void render(const hittable &world, size_t threads = 1);
 
 private:
     /* Private Camera Variables Here */

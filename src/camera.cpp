@@ -3,9 +3,11 @@
 //
 #include "camera.hpp"
 
+#include <thread>
+
 #include "grid.hpp"
 
-void camera::render(const hittable &world, const size_t threads = 10) {
+void camera::render(const hittable &world, const size_t threads) {
     initialize();
     std::ofstream file;
     file.open("image.ppm");
@@ -13,9 +15,12 @@ void camera::render(const hittable &world, const size_t threads = 10) {
     file << "P3\n" << image_width << ' ' << image_height << "\n255\n";
     const size_t image_total{image_width * image_height};
     const size_t size = image_total / threads;
+    std::vector<std::thread> thread_pool;
     for (size_t i = 0; i < image_total; i += size) {
-        render_range(i, std::min(i + size, image_total), world, img);
+        std::thread t(&camera::render_range, this, i, std::min(i + size, image_total), std::ref(world), std::ref(img));
+        thread_pool.push_back(std::move(t));
     }
+    for (auto &t: thread_pool) t.join();
     // render_range(0, image_total, world, img);
     std::cout << "\nWriting image...     " << std::flush;
     img.write(file);
