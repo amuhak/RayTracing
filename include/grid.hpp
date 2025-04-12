@@ -8,7 +8,7 @@
 
 #include "color.hpp"
 
-
+constexpr size_t MAX_STRING_SIZE = 1000000;
 /**
  * This is a grid that holds the image data.
  */
@@ -40,7 +40,14 @@ public:
     }
 
     void write(std::ostream &out) const {
-        for (const auto &i: data) write_color(out, i);
+        std::string ans;
+        for (size_t i = 0; i < data.size(); i += MAX_STRING_SIZE) {
+            for (size_t j = i; j < std::min(i + MAX_STRING_SIZE, data.size()); j++) {
+                write_color(ans, data[j]);
+            }
+            out << ans;
+            ans.clear();
+        }
     }
 };
 
