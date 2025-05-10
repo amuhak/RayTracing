@@ -3,6 +3,7 @@
 //
 
 #include "color.hpp"
+#include "interval.hpp"
 
 void write_color(std::ostream &out, const color &pixel_color) {
     const auto r = pixel_color.x();
@@ -10,9 +11,10 @@ void write_color(std::ostream &out, const color &pixel_color) {
     const auto b = pixel_color.z();
 
     // Translate the [0,1] component values to the byte range [0,255].
-    const auto rbyte = static_cast<int>(255.999 * r);
-    const auto gbyte = static_cast<int>(255.999 * g);
-    const auto bbyte = static_cast<int>(255.999 * b);
+    static const interval intensity(0.000, 0.999);
+    int const rbyte = int(256 * intensity.clamp(r));
+    int const gbyte = int(256 * intensity.clamp(g));
+    int const bbyte = int(256 * intensity.clamp(b));
 
     // Write out the pixel color components.
     out << rbyte << ' ' << gbyte << ' ' << bbyte << '\n';
