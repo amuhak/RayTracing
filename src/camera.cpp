@@ -2,10 +2,10 @@
 // Created by amuhak on 4/7/2025.
 //
 #include "camera.hpp"
-
+#include "grid.hpp"
 #include <thread>
 
-#include "grid.hpp"
+
 
 void camera::render(const hittable &world, const size_t threads) {
     initialize();
@@ -43,17 +43,17 @@ void camera::render_pixel(const size_t idx, const hittable &world, grid &img) co
         s << "\rWorking on scanline: " << std::setw(16) << j << "   " << std::flush;
         std::cout << s.str();
     }
-    const auto pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
-    const auto ray_direction = pixel_center - center;
-    const ray r(center, ray_direction);
-    const color pixel_color = ray_color(r, world);
-    img.set(j, i, pixel_color);
+    color pixel_color(0, 0, 0);
+    for (int sample{}; sample < samples_per_pixel; sample++) {
+        ray r = get_ray(i, j);
+        pixel_color += ray_color(r, world);
+    }
+    img.set(j, i, pixel_color * pixel_samples_scale);
 }
 
 
 void camera::initialize() {
     hittable_list world;
-
     world.add(make_shared<sphere>(point3(0, 0, -1), 0.5));
     world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));
 
@@ -94,4 +94,20 @@ void camera::initialize() {
     vec3 unit_direction = unit_vector(r.direction());
     const auto a = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
+}
+
+[[nodiscard]] ray camera::get_ray(int i, int j) const {
+    auto offset = sample_square();
+    auto pixel_sample = pixel00_loc
+                        + ((i + offset.x()) * pixel_delta_u)
+                        + ((j + offset.y()) * pixel_delta_v);
+
+    auto ray_origin = center;
+    auto ray_direction = pixel_sample - ray_origin;
+
+    return ray(ray_origin, ray_direction);
+}
+
+[[nodiscard]] vec3 camera::sample_square() const {
+    return vec3(random_double() - 0.5, random_double() - 0.5, 0);
 }

@@ -10,7 +10,8 @@
 #include "hittable.hpp"
 #include "main.hpp"
 #include "camera.hpp"
-
+constexpr int samples_per_pixel = 100;
+constexpr double pixel_samples_scale{1.0 / samples_per_pixel}; // Color scale factor for a sum of pixel samples
 
 class camera {
 public:
@@ -33,6 +34,10 @@ private:
     void render_range(size_t start, size_t end, const hittable &world, grid &img) const;
 
     void render_pixel(size_t idx, const hittable &world, grid &img) const;
+
+    [[nodiscard]] ray get_ray(int i, int j) const;
+
+    [[nodiscard]] vec3 sample_square() const;
 
     [[nodiscard]] static color ray_color(const ray &r, const hittable &world);
 };
