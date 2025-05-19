@@ -10,7 +10,10 @@
 #include "hittable.hpp"
 #include "main.hpp"
 #include "camera.hpp"
+
+
 constexpr int samples_per_pixel = 100;
+constexpr int max_depth = 10; // Maximum number of ray bounces
 constexpr double pixel_samples_scale{1.0 / samples_per_pixel}; // Color scale factor for a sum of pixel samples
 
 class camera {
@@ -39,7 +42,7 @@ private:
 
     [[nodiscard]] vec3 sample_square() const;
 
-    [[nodiscard]] static color ray_color(const ray &r, const hittable &world);
+    [[nodiscard]] static color ray_color(const ray &r, int depth, const hittable &world);
 };
 
 

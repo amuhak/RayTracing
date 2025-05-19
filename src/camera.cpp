@@ -6,7 +6,6 @@
 #include <thread>
 
 
-
 void camera::render(const hittable &world, const size_t threads) {
     initialize();
     std::ofstream file;
@@ -46,7 +45,7 @@ void camera::render_pixel(const size_t idx, const hittable &world, grid &img) co
     color pixel_color(0, 0, 0);
     for (int sample{}; sample < samples_per_pixel; sample++) {
         ray r = get_ray(i, j);
-        pixel_color += ray_color(r, world);
+        pixel_color += ray_color(r, max_depth, world);
     }
     img.set(j, i, pixel_color * pixel_samples_scale);
 }
@@ -85,10 +84,12 @@ void camera::initialize() {
     pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 }
 
-[[nodiscard]] color camera::ray_color(const ray &r, const hittable &world) {
+[[nodiscard]] color camera::ray_color(const ray &r, int depth, const hittable &world) {
+    if (depth <= 0) return {0, 0, 0};
     hit_record rec;
     if (world.hit(r, interval(0, infinity), rec)) {
-        return 0.5 * (rec.normal + color(1, 1, 1));
+        vec3 direction = random_on_hemisphere(rec.normal);
+        return 0.5 * ray_color(ray(rec.p, direction), depth - 1, world);
     }
 
     vec3 unit_direction = unit_vector(r.direction());

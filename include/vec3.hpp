@@ -5,6 +5,7 @@
 #ifndef VEC3_H
 #define VEC3_H
 using type = double;
+#include "rtweekend.hpp"
 #include <cmath>
 #include <iostream>
 
@@ -52,7 +53,19 @@ public:
     [[nodiscard]] type length_squared() const {
         return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
     }
+
+    static vec3 random() {
+        return {random_double(), random_double(), random_double()};
+    }
+
+    static vec3 random(const double min, const double max) {
+        return {random_double(min, max), random_double(min, max), random_double(min, max)};
+    }
 };
+
+inline vec3 random_unit_vector();
+
+vec3 random_on_hemisphere(const vec3 &normal);
 
 std::ostream &operator<<(std::ostream &out, const vec3 &v);
 
