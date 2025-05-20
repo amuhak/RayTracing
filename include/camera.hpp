@@ -22,6 +22,11 @@ public:
     double aspect_ratio = 16.0 / 9.0; // Ratio of image width over height
     size_t image_width = 400; // Rendered image width in pixel count
 
+    /**
+     * Constructor for the camera class.
+     * @param world The hittable world to render
+     * @param threads The number of threads to use for rendering
+     */
     void render(const hittable &world, size_t threads = 1);
 
 private:
@@ -32,16 +37,48 @@ private:
     vec3 pixel_delta_u; // Offset to pixel to the right
     vec3 pixel_delta_v; // Offset to pixel below
 
+    /**
+     * Initializes a variety of constants and variables used to render the images.
+     */
     void initialize();
 
+    /**
+     * Renders a range of pixels in the image.
+     * @param start The starting index of the range to render (Inclusive)
+     * @param end The ending index of the range to render
+     * @param world The hittable world to render
+     * @param img The location to store the rendered image
+     */
     void render_range(size_t start, size_t end, const hittable &world, grid &img) const;
 
+    /**
+     * Renders a single pixel in the image.
+     * @param idx the index of the pixel to render
+     * @param world The hittable world to render
+     * @param img The location to store the rendered image
+     */
     void render_pixel(size_t idx, const hittable &world, grid &img) const;
 
+    /**
+     * Generates rays from the camera to random points around the pixel at (i, j).
+     * @param i The i coordinate of the pixel.
+     * @param j The j coordinate of the pixel.
+     * @return A ray from the camera to a point.
+     */
     [[nodiscard]] ray get_ray(int i, int j) const;
 
-    [[nodiscard]] vec3 sample_square() const;
+    /**
+     * @return random x and y between -0.5 and 0.5 and a z of 0.
+     */
+    [[nodiscard]] static vec3 sample_square();
 
+    /**
+     * Recursively samples the color of a ray.
+     * @param r The ray to trace.
+     * @param depth The current depth of the ray.
+     * @param world The hittable world to trace the ray against.
+     * @return The color of the ray sampled.
+     */
     [[nodiscard]] static color ray_color(const ray &r, int depth, const hittable &world);
 };
 
