@@ -87,7 +87,7 @@ void camera::initialize() {
 [[nodiscard]] color camera::ray_color(const ray &r, int depth, const hittable &world) {
     if (depth <= 0) return {0, 0, 0};
     hit_record rec;
-    if (world.hit(r, interval(0, infinity), rec)) {
+    if (world.hit(r, interval(0.001, infinity), rec)) {
         vec3 direction = random_on_hemisphere(rec.normal);
         return 0.5 * ray_color(ray(rec.p, direction), depth - 1, world);
     }
