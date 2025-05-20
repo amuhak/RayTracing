@@ -106,9 +106,9 @@ void camera::initialize() {
     auto ray_origin = center;
     auto ray_direction = pixel_sample - ray_origin;
 
-    return ray(ray_origin, ray_direction);
+    return {ray_origin, ray_direction};
 }
 
-[[nodiscard]] vec3 camera::sample_square() const {
-    return vec3(random_double() - 0.5, random_double() - 0.5, 0);
+[[nodiscard]] vec3 camera::sample_square() {
+    return {random_double() - 0.5, random_double() - 0.5, 0};
 }
