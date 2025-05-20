@@ -13,7 +13,7 @@
 
 
 constexpr int samples_per_pixel = 100;
-constexpr int max_depth = 10; // Maximum number of ray bounces
+constexpr int max_depth = 50; // Maximum number of ray bounces
 constexpr double pixel_samples_scale{1.0 / samples_per_pixel}; // Color scale factor for a sum of pixel samples
 
 class camera {
