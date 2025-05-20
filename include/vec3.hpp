@@ -63,8 +63,17 @@ public:
     }
 };
 
+/**
+ * Generate a random unit vector.
+ * @return A random unit vector
+ */
 inline vec3 random_unit_vector();
 
+/**
+ * Generate a random vector that is in the same hemisphere as the normal.
+ * @param normal The normal vector of the hemisphere
+ * @return A random vector in the hemisphere defined by the normal
+ */
 vec3 random_on_hemisphere(const vec3 &normal);
 
 std::ostream &operator<<(std::ostream &out, const vec3 &v);
@@ -81,8 +90,20 @@ vec3 operator*(const vec3 &v, type t);
 
 vec3 operator/(const vec3 &v, type t);
 
+/**
+ * Calculate the dot product of two vectors.
+ * @param u vector u
+ * @param v vector v
+ * @return The dot product of u and v
+ */
 type dot(const vec3 &u, const vec3 &v);
 
+/**
+ * Calculate the cross product of two vectors.
+ * @param u vector u
+ * @param v vector v
+ * @return The cross product of u and v
+ */
 vec3 cross(const vec3 &u, const vec3 &v);
 
 vec3 unit_vector(const vec3 &v);
