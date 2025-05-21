@@ -52,7 +52,7 @@ vec3 unit_vector(const vec3 &v) {
 
 vec3 random_unit_vector() {
     while (true) {
-        auto p = vec3::random(-1,1);
+        auto p = vec3::random(-1, 1);
         if (const auto lensq = p.length_squared(); 1e-160 < lensq && lensq <= 1)
             return p / sqrt(lensq);
     }
