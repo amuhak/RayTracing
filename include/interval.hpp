@@ -29,7 +29,7 @@ public:
         return min < x && x < max;
     }
 
-    [[nodiscard]] double clamp(double x) const {
+    [[nodiscard]] double clamp(const double x) const {
         if (x < min) return min;
         if (x > max) return max;
         return x;

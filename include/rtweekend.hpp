@@ -23,7 +23,7 @@ inline double random_double() {
     return dis(gen);
 }
 
-inline double random_double(double min, double max) {
+inline double random_double(const double min, const double max) {
     std::uniform_real_distribution dis1(min, max);
     return dis1(gen);
 }

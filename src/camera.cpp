@@ -84,7 +84,7 @@ void camera::initialize() {
     pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 }
 
-[[nodiscard]] color camera::ray_color(const ray &r, int depth, const hittable &world) {
+[[nodiscard]] color camera::ray_color(const ray &r, const int depth, const hittable &world) {
     if (depth <= 0) return {0, 0, 0};
     hit_record rec;
     if (world.hit(r, interval(0.001, infinity), rec)) {
@@ -97,11 +97,11 @@ void camera::initialize() {
     return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
 }
 
-[[nodiscard]] ray camera::get_ray(int i, int j) const {
+[[nodiscard]] ray camera::get_ray(const int i, const int j) const {
     auto offset = sample_square();
     auto pixel_sample = pixel00_loc
-                        + ((i + offset.x()) * pixel_delta_u)
-                        + ((j + offset.y()) * pixel_delta_v);
+                        + (i + offset.x()) * pixel_delta_u
+                        + (j + offset.y()) * pixel_delta_v;
 
     auto ray_origin = center;
     auto ray_direction = pixel_sample - ray_origin;

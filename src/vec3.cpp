@@ -29,7 +29,7 @@ vec3 operator*(const vec3 &v, const type t) {
 }
 
 vec3 operator/(const vec3 &v, const type t) {
-    return (1 / t) * v;
+    return 1 / t * v;
 }
 
 type dot(const vec3 &u, const vec3 &v) {
@@ -62,6 +62,5 @@ vec3 random_on_hemisphere(const vec3 &normal) {
     vec3 on_unit_sphere = random_unit_vector();
     if (dot(on_unit_sphere, normal) > 0.0) // In the same hemisphere as the normal
         return on_unit_sphere;
-    else
-        return -on_unit_sphere;
+    return -on_unit_sphere;
 }
