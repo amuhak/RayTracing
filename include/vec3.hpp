@@ -61,6 +61,10 @@ public:
     static vec3 random(const double min, const double max) {
         return {random_double(min, max), random_double(min, max), random_double(min, max)};
     }
+
+    static vec3 unit_random() {
+        return {random_unit_double(), random_unit_double(), random_unit_double()};
+    }
 };
 
 /**
