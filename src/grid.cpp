@@ -3,3 +3,5 @@
 //
 
 #include "grid.hpp"
+
+thread_local uint16_t grid::done{0};

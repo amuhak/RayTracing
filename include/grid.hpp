@@ -4,11 +4,11 @@
 
 #ifndef GRID_HPP
 #define GRID_HPP
-#include <vector>
-
+#include <atomic>
 #include "color.hpp"
 
 constexpr size_t MAX_STRING_SIZE = 1000000;
+constexpr int DONE_THRESHOLD = 10;
 /**
  * This is a grid that holds the image data.
  */
@@ -17,6 +17,8 @@ public:
     std::vector<color> data;
     size_t width, height;
     size_t size;
+    static thread_local uint16_t done;
+    std::atomic_uint64_t total_done{};
 
     grid(const size_t width, const size_t height) {
         data.resize(width * height);
@@ -25,18 +27,18 @@ public:
         this->size = width * height;
     }
 
-    void set(const int idx, const color &c) {
-        const auto i(static_cast<size_t>(idx));
-        data.at(i) = c;
-    }
-
     /**
      * @param x the row number
      * @param y the column number
      * @param c the color to set
      */
-    void set(const int x, const int y, const color &c) {
-        set(x * static_cast<int>(width) + y, c);
+    void set(const u_int32_t x, const u_int32_t y, const color &c) {
+        data.at(width * x + y) = c;
+        done++;
+        if (done >= DONE_THRESHOLD) {
+            total_done += done;
+            done = 0;
+        }
     }
 
     void write(std::ostream &out) const {

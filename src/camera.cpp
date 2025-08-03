@@ -3,6 +3,7 @@
 //
 #include "camera.hpp"
 #include "grid.hpp"
+#include "prettyPrint.h"
 #include <thread>
 
 
@@ -15,11 +16,15 @@ void camera::render(const hittable &world, const size_t threads) {
     const size_t image_total{image_width * image_height};
     const size_t size = image_total / threads;
     std::vector<std::thread> thread_pool;
+    prettyPrint printer(img);
+    std::thread printer_thread(&prettyPrint::run, &printer);
     for (size_t i = 0; i < image_total; i += size) {
         std::thread t(&camera::render_range, this, i, std::min(i + size, image_total), std::ref(world), std::ref(img));
         thread_pool.push_back(std::move(t));
     }
     for (auto &t: thread_pool) t.join();
+    printer.keepUpdating = false;
+    printer_thread.join();
     // render_range(0, image_total, world, img);
     std::cout << "\nWriting image...     " << std::flush;
     img.write(file);
@@ -35,13 +40,8 @@ void camera::render_range(const size_t start, const size_t end, const hittable &
 }
 
 void camera::render_pixel(const size_t idx, const hittable &world, grid &img) const {
-    const int j{static_cast<int>(idx / image_width)};
-    const int i{static_cast<int>(idx % image_width)};
-    if (i == 0) {
-        std::stringstream s;
-        s << "\rWorking on scanline: " << std::setw(16) << j << "   " << std::flush;
-        std::cout << s.str();
-    }
+    const u_int32_t j{static_cast<u_int32_t>(idx / image_width)};
+    const u_int32_t i{static_cast<u_int32_t>(idx % image_width)};
     color pixel_color(0, 0, 0);
     for (int sample{}; sample < samples_per_pixel; sample++) {
         ray r = get_ray(i, j);
@@ -94,7 +94,7 @@ void camera::initialize() {
     return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
 }
 
-[[nodiscard]] ray camera::get_ray(const int i, const int j) const {
+[[nodiscard]] ray camera::get_ray(const u_int32_t i, const u_int32_t j) const {
     auto offset = sample_square();
     auto pixel_sample = pixel00_loc
                         + (i + offset.x()) * pixel_delta_u

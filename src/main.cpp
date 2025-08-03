@@ -1,7 +1,5 @@
 #include "main.hpp"
-
 #include "camera.hpp"
-
 
 int main() {
     hittable_list world;

@@ -12,7 +12,7 @@
 #include "camera.hpp"
 
 
-constexpr int samples_per_pixel = 100;
+constexpr int samples_per_pixel = 1000;
 constexpr int max_depth = 50; // Maximum number of ray bounces
 constexpr double pixel_samples_scale{1.0 / samples_per_pixel}; // Color scale factor for a sum of pixel samples
 
@@ -65,7 +65,7 @@ private:
      * @param j The j coordinate of the pixel.
      * @return A ray from the camera to a point.
      */
-    [[nodiscard]] ray get_ray(int i, int j) const;
+    [[nodiscard]] ray get_ray(u_int32_t i, u_int32_t j) const;
 
     /**
      * @return random x and y between -0.5 and 0.5 and a z of 0.

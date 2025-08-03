@@ -86,6 +86,8 @@ else ()
             src/interval.cpp
             src/camera.cpp
             src/grid.cpp
+            src/prettyPrint.cpp
+            include/prettyPrint.h
     )
 endif ()
 
