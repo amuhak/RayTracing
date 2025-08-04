@@ -4,6 +4,7 @@
 #include "camera.hpp"
 #include "grid.hpp"
 #include "prettyPrint.h"
+#include "display.hpp"
 #include <thread>
 
 
@@ -18,6 +19,8 @@ void camera::render(const hittable &world, const size_t threads) {
     std::vector<std::thread> thread_pool;
     prettyPrint printer(img);
     std::thread printer_thread(&prettyPrint::run, &printer);
+    display disp;
+    std::thread display_thread(&display::run, &disp, image_width, image_height, std::ref(img.data));
     for (size_t i = 0; i < image_total; i += size) {
         std::thread t(&camera::render_range, this, i, std::min(i + size, image_total), std::ref(world), std::ref(img));
         thread_pool.push_back(std::move(t));
@@ -25,6 +28,8 @@ void camera::render(const hittable &world, const size_t threads) {
     for (auto &t: thread_pool) t.join();
     printer.keepUpdating = false;
     printer_thread.join();
+    disp.keepUpdating = false;
+    display_thread.join();
     // render_range(0, image_total, world, img);
     std::cout << "\nWriting image...     " << std::flush;
     img.write(file);

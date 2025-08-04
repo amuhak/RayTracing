@@ -14,4 +14,8 @@ void write_color(std::ostream &std_out, std::ostream &file, const color &pixel_c
 
 void write_color(std::string &ans, const color &pixel_color);
 
+void write_color(std::string &ans, uint8_t a, uint8_t b, uint8_t c);
+
+std::tuple<uint8_t, uint8_t, uint8_t> convert_color(const color &pixel_color);
+
 #endif //COLOR_H

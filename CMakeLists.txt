@@ -46,7 +46,7 @@ else ()
             src/camera.cpp
             src/grid.cpp
             src/prettyPrint.cpp
-            include/prettyPrint.h
+            src/display.cpp
     )
 endif ()
 

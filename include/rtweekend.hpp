@@ -29,8 +29,8 @@ inline double random_unit_double() {
 }
 
 inline double random_double(const double min, const double max) {
-    std::uniform_real_distribution dis1(min, max);
-    return dis1(gen);
+    std::uniform_real_distribution dis2(min, max);
+    return dis2(gen);
 }
 
 #endif //RTWEEKEND_H

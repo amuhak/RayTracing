@@ -53,7 +53,7 @@ public:
 
     bool keepUpdating{true};
 
-    void run();
+    void run() const;
 };
 
 

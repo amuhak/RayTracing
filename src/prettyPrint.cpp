@@ -65,9 +65,9 @@ void prettyPrint::update(const size_t done, const size_t total) {
     }
 }
 
-void prettyPrint::run() {
+void prettyPrint::run() const {
     while (keepUpdating) {
-        // Wait for 10ms
+        // Wait for 100ms
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         // Update the status
         update(image->total_done.load(std::memory_order_relaxed), image->size);

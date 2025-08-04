@@ -4,6 +4,7 @@
 
 #include "color.hpp"
 #include "interval.hpp"
+#include <SFML/Graphics.hpp>
 
 void write_color(std::ostream &out, const color &pixel_color) {
     const auto r = pixel_color.x();
@@ -48,4 +49,17 @@ void write_color(std::string &ans, const color &pixel_color) {
     char buffer[16];
     const int n = std::snprintf(buffer, sizeof(buffer), "%d %d %d\n", rbyte, gbyte, bbyte);
     ans.append(buffer, static_cast<size_t>(n));
+}
+
+void write_color(std::string &ans, const uint8_t a, const uint8_t b, const uint8_t c) {
+    char buffer[16];
+    const int n = std::snprintf(buffer, sizeof(buffer), "%d %d %d\n", a, b, c);
+    ans.append(buffer, static_cast<size_t>(n));
+}
+
+std::tuple<uint8_t, uint8_t, uint8_t> convert_color(const color &pixel_color) {
+    const auto a = static_cast<uint8_t>(255.999 * pixel_color.x());
+    const auto b = static_cast<uint8_t>(255.999 * pixel_color.y());
+    const auto c = static_cast<uint8_t>(255.999 * pixel_color.z());
+    return std::make_tuple(a, b, c);
 }

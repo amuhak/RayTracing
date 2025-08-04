@@ -4,7 +4,13 @@
     <option name="pythonIntegrationState" value="YES" />
   </component>
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
-  <component name="WestSettings"><![CDATA[{
-  "westExecutable": "west.exe"
-}]]></component>
+  <component name="CidrRootsConfiguration">
+    <sourceRoots>
+      <file path="$PROJECT_DIR$/include" />
+      <file path="$PROJECT_DIR$/src" />
+    </sourceRoots>
+  </component>
+  <component name="WestSettings">{
+  &quot;westExecutable&quot;: &quot;west.exe&quot;
+}</component>
 </project>
