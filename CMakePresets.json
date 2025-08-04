@@ -35,5 +35,15 @@
         }
       }
     }
+  ],
+  "buildPresets": [
+    {
+      "name": "cmake-release",
+      "configurePreset": "cmake-release"
+    },
+    {
+      "name": "cmake-debug",
+      "configurePreset": "cmake-debug"
+    }
   ]
 }
