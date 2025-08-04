@@ -6,7 +6,31 @@
 #include "prettyPrint.h"
 #include "display.hpp"
 #include <thread>
+#include <vector>
+#include <atomic>
 
+constexpr int WORK_PER_WORKER = 16; // number of pixels each worker will render in a single call
+constexpr bool USE_PRETTY_PRINT = true; // whether to use pretty print or not
+constexpr bool USE_DISPLAY = true; // whether to use display or not
+
+void camera::render_worker(std::atomic<size_t> &next_pixel_idx, const hittable &world, grid &img) const {
+    const size_t image_total = image_width * image_height;
+
+    // Loop until all pixels are claimed
+    while (true) {
+        const size_t start_index = next_pixel_idx.fetch_add(WORK_PER_WORKER, std::memory_order_relaxed);
+
+        if (start_index >= image_total) {
+            break;
+        }
+
+        size_t end_index = std::min(start_index + WORK_PER_WORKER, image_total);
+
+        for (size_t i = start_index; i < end_index; ++i) {
+            render_pixel(i, world, img);
+        }
+    }
+}
 
 void camera::render(const hittable &world, const size_t threads) {
     initialize();
@@ -14,23 +38,54 @@ void camera::render(const hittable &world, const size_t threads) {
     file.open("image.ppm");
     grid img(image_width, image_height);
     file << "P3\n" << image_width << ' ' << image_height << "\n255\n";
-    const size_t image_total{image_width * image_height};
-    const size_t size = image_total / threads;
+
+    std::atomic<size_t> next_pixel_idx = 0;
+
     std::vector<std::thread> thread_pool;
-    prettyPrint printer(img);
-    std::thread printer_thread(&prettyPrint::run, &printer);
-    display disp;
-    std::thread display_thread(&display::run, &disp, image_width, image_height, std::ref(img.data));
-    for (size_t i = 0; i < image_total; i += size) {
-        std::thread t(&camera::render_range, this, i, std::min(i + size, image_total), std::ref(world), std::ref(img));
-        thread_pool.push_back(std::move(t));
+    thread_pool.reserve(threads);
+
+    // Launch supporting threads
+    std::optional<prettyPrint> printer;
+    std::optional<std::thread> printer_thread;
+    std::optional<display> disp;
+    std::optional<std::thread> display_thread;
+
+    if constexpr (USE_PRETTY_PRINT) {
+        printer.emplace(img);
+        printer_thread.emplace(&prettyPrint::run, &printer.value());
     }
-    for (auto &t: thread_pool) t.join();
-    printer.keepUpdating = false;
-    printer_thread.join();
-    disp.keepUpdating = false;
-    display_thread.join();
-    // render_range(0, image_total, world, img);
+    if constexpr (USE_DISPLAY) {
+        disp.emplace();
+        display_thread.emplace(&display::run,
+                               &disp.value(),
+                               static_cast<uint32_t>(image_width),
+                               static_cast<uint32_t>(image_height),
+                               std::ref(img.data)
+        );
+    }
+
+
+    // Launch a fixed pool of worker threads
+    for (size_t i = 0; i < threads; ++i) {
+        thread_pool.emplace_back(&camera::render_worker, this, std::ref(next_pixel_idx), std::ref(world),
+                                 std::ref(img));
+    }
+
+    // Join all worker threads
+    for (auto &t: thread_pool) {
+        t.join();
+    }
+
+    // Stop supporting threads
+    if constexpr (USE_PRETTY_PRINT) {
+        printer->keepUpdating = false;
+        printer_thread->join();
+    }
+    if constexpr (USE_DISPLAY) {
+        disp->keepUpdating = false;
+        display_thread->join();
+    }
+
     std::cout << "\nWriting image...     " << std::flush;
     img.write(file);
     std::cout << "\nDone.                 \n";
@@ -54,7 +109,6 @@ void camera::render_pixel(const size_t idx, const hittable &world, grid &img) co
     }
     img.set(j, i, pixel_color * pixel_samples_scale);
 }
-
 
 void camera::initialize() {
     // Calculate the image height, and ensure that it's at least 1.

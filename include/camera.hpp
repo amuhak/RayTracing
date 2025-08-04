@@ -42,6 +42,8 @@ private:
      */
     void initialize();
 
+    void render_worker(std::atomic<size_t> &next_pixel_idx, const hittable &world, grid &img) const;
+
     /**
      * Renders a range of pixels in the image.
      * @param start The starting index of the range to render (Inclusive)
