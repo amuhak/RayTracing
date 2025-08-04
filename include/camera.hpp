@@ -65,7 +65,7 @@ private:
      * @param j The j coordinate of the pixel.
      * @return A ray from the camera to a point.
      */
-    [[nodiscard]] ray get_ray(u_int32_t i, u_int32_t j) const;
+    [[nodiscard]] ray get_ray(uint32_t i, uint32_t j) const;
 
     /**
      * @return random x and y between -0.5 and 0.5 and a z of 0.

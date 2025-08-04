@@ -40,8 +40,8 @@ void camera::render_range(const size_t start, const size_t end, const hittable &
 }
 
 void camera::render_pixel(const size_t idx, const hittable &world, grid &img) const {
-    const u_int32_t j{static_cast<u_int32_t>(idx / image_width)};
-    const u_int32_t i{static_cast<u_int32_t>(idx % image_width)};
+    const uint32_t j{static_cast<uint32_t>(idx / image_width)};
+    const uint32_t i{static_cast<uint32_t>(idx % image_width)};
     color pixel_color(0, 0, 0);
     for (int sample{}; sample < samples_per_pixel; sample++) {
         ray r = get_ray(i, j);
@@ -94,7 +94,7 @@ void camera::initialize() {
     return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
 }
 
-[[nodiscard]] ray camera::get_ray(const u_int32_t i, const u_int32_t j) const {
+[[nodiscard]] ray camera::get_ray(const uint32_t i, const uint32_t j) const {
     auto offset = sample_square();
     auto pixel_sample = pixel00_loc
                         + (i + offset.x()) * pixel_delta_u

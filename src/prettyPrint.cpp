@@ -16,8 +16,8 @@ void prettyPrint::get_terminal_size(uint32_t &width, uint32_t &height) {
     // ioctl is a low-level system call to manipulate device parameters.
     // TIOCGWINSZ is the specific request to "get window size".
     ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-    width = static_cast<int>(w.ws_col);
-    height = static_cast<int>(w.ws_row);
+    width = static_cast<uint32_t>(w.ws_col);
+    height = static_cast<uint32_t>(w.ws_row);
 #else
     // Default values for other or unknown operating systems
     width = 80;
@@ -31,7 +31,6 @@ void prettyPrint::get_terminal_size(uint32_t &width, uint32_t &height) {
 }
 
 constexpr auto CLEAR_LINE = "\x1B[2K";
-constexpr auto CURSOR_UP_2 = "\x1B[2A";
 
 void prettyPrint::update(const size_t done, const size_t total) {
     // Get size
@@ -73,4 +72,5 @@ void prettyPrint::run() {
         // Update the status
         update(image->total_done.load(std::memory_order_relaxed), image->size);
     }
+    update(image->size, image->size);
 }

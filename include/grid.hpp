@@ -32,7 +32,7 @@ public:
      * @param y the column number
      * @param c the color to set
      */
-    void set(const u_int32_t x, const u_int32_t y, const color &c) {
+    void set(const uint32_t x, const uint32_t y, const color &c) {
         data.at(width * x + y) = c;
         done++;
         if (done >= DONE_THRESHOLD) {
