@@ -46,6 +46,7 @@ else ()
             src/camera.cpp
             src/grid.cpp
             src/prettyPrint.cpp
+            src/rtweekend.cpp
             src/display.cpp
     )
 endif ()

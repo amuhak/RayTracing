@@ -6,31 +6,51 @@
 #define RTWEEKEND_H
 
 #include <limits>
-#include <memory>
 #include <random>
+#include <bit>
 
 constexpr double infinity = std::numeric_limits<double>::infinity();
 constexpr double pi = 3.1415926535897932385;
-thread_local static std::mt19937_64 gen(std::random_device{}());
-thread_local static std::uniform_real_distribution dis(0.0, 1.0);
-thread_local static std::uniform_real_distribution dis1(-1.0, 1.0);
 
+// Romu Pseudorandom Number Generators
+//
+// Copyright 2020 Mark A. Overton
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// ------------------------------------------------------------------------------------------------
+//
+// Website: romu-random.org
+// Paper:   http://arxiv.org/abs/2002.11331
+uint64_t romuDuoJr_random();
 
-constexpr double degrees_to_radians(const double degrees) {
-    return degrees * pi / 180.0;
-}
+constexpr double degrees_to_radians(double degrees);
 
-inline double random_double() {
-    return dis(gen);
-}
+/**
+ * @return Random real in [0,1)
+ */
+double random_double();
 
-inline double random_unit_double() {
-    return dis1(gen);
-}
+/**
+ * @return A random double in the range [-1, 1].
+ */
+double random_unit_double();
 
-inline double random_double(const double min, const double max) {
-    std::uniform_real_distribution dis2(min, max);
-    return dis2(gen);
-}
+/**
+ * @param min minimum value
+ * @param max maximum value
+ * @return A random double in the range [min, max].
+ */
+double random_double(double min, double max);
 
 #endif //RTWEEKEND_H
