@@ -4,8 +4,12 @@
 
 #include "rtweekend.hpp"
 
-thread_local static std::mt19937_64 gen(std::random_device{}());
-thread_local static uint64_t xState{std::random_device{}()}, yState{std::random_device{}()}; // set to nonzero seed
+thread_local static std::mt19937_64 gen{
+    std::hash<std::thread::id>{}(std::this_thread::get_id())
+};
+
+
+thread_local static uint64_t xState{gen()}, yState{gen()}; // set to nonzero seed
 
 uint64_t romuDuoJr_random() {
     const uint64_t xp = xState;

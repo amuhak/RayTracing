@@ -7,6 +7,7 @@
 
 #include <limits>
 #include <random>
+#include <thread>
 #include <bit>
 
 constexpr double infinity = std::numeric_limits<double>::infinity();
