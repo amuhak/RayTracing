@@ -40,6 +40,8 @@ class prettyPrint {
     std::chrono::time_point<std::chrono::high_resolution_clock> timeOfLastUpdate{};
     const grid *image;
 
+    static uint64_t lastPixelsRendered;
+
     static void get_terminal_size(uint32_t &width, uint32_t &height);
 
     static void update(size_t done, size_t total);

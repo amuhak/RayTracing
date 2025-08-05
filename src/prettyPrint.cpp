@@ -31,6 +31,8 @@ void prettyPrint::get_terminal_size(uint32_t &width, uint32_t &height) {
 }
 
 constexpr auto CLEAR_LINE = "\x1B[2K";
+uint64_t prettyPrint::lastPixelsRendered = 0;
+constexpr auto SLEEP_DURATION = std::chrono::milliseconds(100);
 
 void prettyPrint::update(const size_t done, const size_t total) {
     // Get size
@@ -42,13 +44,48 @@ void prettyPrint::update(const size_t done, const size_t total) {
     const auto hashes = static_cast<size_t>(percentDone * static_cast<double>(barWidth));
     const size_t spaces = barWidth - hashes;
 
+    const uint64_t change_inPixels = done - lastPixelsRendered;
+    lastPixelsRendered = done;
+    using ns = std::chrono::duration<double, std::nano>;
+
+    // Cast SLEEP_DURATION to our new floating-point type BEFORE dividing.
+    const auto time_to_render_one_pixel = ns(SLEEP_DURATION) / change_inPixels;
+
+    // Now, time_left will also be of type float_ms and will have the correct value.
+    auto time_left = (total - done) * time_to_render_one_pixel;
+
+    auto hours = std::chrono::duration_cast<std::chrono::hours>(time_left);
+
+    // 2. Subtract the hours part to get the remainder
+    time_left -= hours;
+
+    // 3. From the remainder, calculate the total number of integer minutes
+    auto minutes = std::chrono::duration_cast<std::chrono::minutes>(time_left);
+    time_left -= minutes;
+
+    // 4. From the new remainder, calculate the integer seconds
+    auto seconds = std::chrono::duration_cast<std::chrono::seconds>(time_left);
+    time_left -= seconds;
+
+    // 5. The final remainder is the fractional part, which we cast to milliseconds
+    auto milliseconds = std::chrono::duration_cast<std::chrono::milliseconds>(time_left);
+
+    std::string timeLeftStr = std::format("{:02}:{:02}:{:02}.{:03}",
+                                          hours.count(),
+                                          minutes.count(),
+                                          seconds.count(),
+                                          milliseconds.count());
+
+
     // Clear line and print status
     std::cout << CLEAR_LINE
             << "Rendering: "
             << std::format("{:.2f}", percentDone * 100)
             << "% Done ("
             << done << "/" << total
-            << "Pixels Rendered)";
+            << " Pixels Rendered) Time Left: "
+            << timeLeftStr;
+
 
     // Move to next line and print progress bar
     std::cout << "\n"
@@ -65,10 +102,11 @@ void prettyPrint::update(const size_t done, const size_t total) {
     }
 }
 
+
 void prettyPrint::run() const {
     while (keepUpdating) {
         // Wait for 100ms
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        std::this_thread::sleep_for(SLEEP_DURATION);
         // Update the status
         update(image->total_done.load(std::memory_order_relaxed), image->size);
     }
