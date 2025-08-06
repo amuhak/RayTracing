@@ -22,7 +22,7 @@ public:
     int samples_per_pixel = 1;
     int max_depth = 50;
     double pixel_samples_scale{1.0 / samples_per_pixel}; // Color scale factor for a sum of pixel samples
-
+    double vfov = 90;
     /**
      * Constructor for the camera class.
      * @param world The hittable world to render

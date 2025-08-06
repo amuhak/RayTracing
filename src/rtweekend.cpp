@@ -22,7 +22,7 @@ uint64_t romuDuoJr_random() {
     return xp;
 }
 
-constexpr double degrees_to_radians(const double degrees) {
+double degrees_to_radians(const double degrees) {
     return degrees * pi / 180.0;
 }
 

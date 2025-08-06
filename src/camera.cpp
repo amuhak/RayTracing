@@ -12,6 +12,7 @@
 #include "grid.hpp"
 #include "display.hpp"
 #include "material.hpp"
+#include "rtweekend.hpp"
 
 
 constexpr int WORK_PER_WORKER = 16; // number of pixels each worker will render in a single call
@@ -117,7 +118,9 @@ void camera::initialize() {
 
     // Viewport widths less than one are ok since they are real valued.
     constexpr double focal_length = 1.0;
-    constexpr double viewport_height = 2.0;
+    auto theta = degrees_to_radians(vfov);
+    auto h = std::tan(theta / 2);
+    auto viewport_height = 2 * h * focal_length;
     const double viewport_width = viewport_height * (
                                       static_cast<double>(image_width) / static_cast<double>(image_height)
                                   );

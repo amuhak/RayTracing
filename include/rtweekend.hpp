@@ -33,7 +33,7 @@ constexpr double pi = 3.1415926535897932385;
 // Paper:   http://arxiv.org/abs/2002.11331
 uint64_t romuDuoJr_random();
 
-constexpr double degrees_to_radians(double degrees);
+double degrees_to_radians(double degrees);
 
 /**
  * @return Random real in [0,1)
