@@ -93,12 +93,6 @@ void camera::render(const hittable &world, const size_t threads) {
     std::cout << img.data.size() << " bytes written to image.ppm" << std::endl;
 }
 
-void camera::render_range(const size_t start, const size_t end, const hittable &world, grid &img) const {
-    for (size_t i = start; i < end; i++) {
-        render_pixel(i, world, img);
-    }
-}
-
 void camera::render_pixel(const size_t idx, const hittable &world, grid &img) const {
     const uint32_t j{static_cast<uint32_t>(idx / image_width)};
     const uint32_t i{static_cast<uint32_t>(idx % image_width)};
@@ -111,6 +105,7 @@ void camera::render_pixel(const size_t idx, const hittable &world, grid &img) co
 }
 
 void camera::initialize() {
+    pixel_samples_scale = 1.0 / static_cast<double>(samples_per_pixel);
     // Calculate the image height, and ensure that it's at least 1.
     image_height = std::max(static_cast<size_t>(1),
                             static_cast<size_t>(static_cast<double>(image_width) / aspect_ratio));
@@ -139,7 +134,7 @@ void camera::initialize() {
     pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 }
 
-[[nodiscard]] color camera::ray_color(const ray &r, int depth, const hittable &world) {
+    [[nodiscard]] color camera::ray_color(const ray &r, int depth, const hittable &world) {
     // If we've exceeded the ray bounce limit, no more light is gathered.
     if (depth <= 0)
         return color(0, 0, 0);
@@ -154,7 +149,7 @@ void camera::initialize() {
     }
 
     vec3 unit_direction = unit_vector(r.direction());
-    auto a = 0.5 * (unit_direction.y() + 1.0);
+    const auto a = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
 }
 
