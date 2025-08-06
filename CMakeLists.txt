@@ -95,7 +95,10 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     # Clang
     target_compile_options(RayTracing PRIVATE ${COMMON_WARNING_FLAGS}
             $<$<CONFIG:Debug>:-g -O0>
-            $<$<CONFIG:Release>:-O3 -march=native -flto=auto>
+            $<$<CONFIG:Release>:-O3 -march=native -flto>
+    )
+    target_link_options(RayTracing PRIVATE
+            $<$<CONFIG:Release>:-flto>
     )
 elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # GCC
