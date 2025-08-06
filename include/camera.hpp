@@ -9,7 +9,6 @@
 #include "color.hpp"
 #include "hittable.hpp"
 #include "main.hpp"
-#include "camera.hpp"
 
 
 class camera {

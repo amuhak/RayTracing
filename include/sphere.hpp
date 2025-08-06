@@ -8,7 +8,6 @@
 #include "hittable.hpp"
 #include "vec3.hpp"
 #include <memory>
-#include <utility>
 
 class sphere : public hittable {
 public:
