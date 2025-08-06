@@ -16,7 +16,7 @@ public:
     /* Public Camera Parameters Here */
     double aspect_ratio = 16.0 / 9.0; // Ratio of image width over height
     size_t image_width = 400; // Rendered image width in pixel count
-    int samples_per_pixel = 10;
+    int samples_per_pixel = 1;
     int max_depth = 50;
     double pixel_samples_scale{1.0 / samples_per_pixel}; // Color scale factor for a sum of pixel samples
 
@@ -41,15 +41,6 @@ private:
     void initialize();
 
     void render_worker(std::atomic<size_t> &next_pixel_idx, const hittable &world, grid &img) const;
-
-    /**
-     * Renders a range of pixels in the image.
-     * @param start The starting index of the range to render (Inclusive)
-     * @param end The ending index of the range to render
-     * @param world The hittable world to render
-     * @param img The location to store the rendered image
-     */
-    void render_range(size_t start, size_t end, const hittable &world, grid &img) const;
 
     /**
      * Renders a single pixel in the image.
