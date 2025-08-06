@@ -5,6 +5,7 @@
 #include "color.hpp"
 #include "interval.hpp"
 #include <SFML/Graphics.hpp>
+#include <cmath>
 
 void write_color(std::ostream &out, const color &pixel_color) {
     const auto r = pixel_color.x();

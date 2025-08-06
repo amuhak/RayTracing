@@ -56,6 +56,8 @@ endif ()
 
 # TARGETS
 
+# target_include_directories(RayTracing PRIVATE ${Stb_INCLUDE_DIR})
+
 # Add the header files
 target_include_directories(RayTracing PRIVATE ${PROJECT_SOURCE_DIR}/include)
 

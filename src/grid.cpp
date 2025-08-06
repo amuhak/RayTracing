@@ -1,8 +1,9 @@
 //
 // Created by amuhak on 4/7/2025.
 //
-
+#ifdef _MSC_VER
 #define STB_IMAGE_WRITE_IMPLEMENTATION
+#endif
 #include <stb_image_write.h>
 #include "grid.hpp"
 
