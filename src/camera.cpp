@@ -134,7 +134,7 @@ void camera::initialize() {
     pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 }
 
-    [[nodiscard]] color camera::ray_color(const ray &r, int depth, const hittable &world) {
+[[nodiscard]] color camera::ray_color(const ray &r, int depth, const hittable &world) {
     // If we've exceeded the ray bounce limit, no more light is gathered.
     if (depth <= 0)
         return color(0, 0, 0);
