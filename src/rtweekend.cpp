@@ -3,28 +3,24 @@
 //
 
 #include "rtweekend.hpp"
-#include <thread>
-#include <random>
 #include <bit>
+#include <random>
+#include <thread>
 
-thread_local static std::mt19937_64 gen{
-    std::hash<std::thread::id>{}(std::this_thread::get_id())
-};
+thread_local static std::mt19937_64 gen{std::hash<std::thread::id>{}(std::this_thread::get_id())};
 
 
 thread_local static uint64_t xState{gen()}, yState{gen()}; // set to nonzero seed
 
 uint64_t romuDuoJr_random() {
     const uint64_t xp = xState;
-    xState = 15241094284759029579u * yState;
-    yState = yState - xp;
-    yState = std::rotl(yState, 27);
+    xState            = 15241094284759029579u * yState;
+    yState            = yState - xp;
+    yState            = std::rotl(yState, 27);
     return xp;
 }
 
-double degrees_to_radians(const double degrees) {
-    return degrees * pi / 180.0;
-}
+double degrees_to_radians(const double degrees) { return degrees * pi / 180.0; }
 
 /**
  * @return Random real in [0,1)
@@ -45,9 +41,7 @@ double random_double() {
  *
  * @return A random double in the range [-1, 1].
  */
-double random_unit_double() {
-    return random_double() * 2.0 - 1.0;
-}
+double random_unit_double() { return random_double() * 2.0 - 1.0; }
 
 double random_double(const double min, const double max) {
     std::uniform_real_distribution dis2(min, max);

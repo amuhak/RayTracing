@@ -6,8 +6,8 @@
 #define CAMERA_HPP
 
 #include <atomic>
-#include "vec3.hpp"
 #include "color.hpp"
+#include "vec3.hpp"
 
 
 class hittable;
@@ -17,15 +17,15 @@ class grid;
 class camera {
 public:
     // Public Camera Variables
-    double aspect_ratio = 16.0 / 9.0; // Ratio of image width over height
-    size_t image_width = 400; // Rendered image width in pixel count
-    int samples_per_pixel = 10; // Count of random samples for each pixel
-    int max_depth = 50; // Maximum number of ray bounces into scene
-    double pixel_samples_scale{1.0 / samples_per_pixel}; // Color scale factor for a sum of pixel samples
-    double vfov = 90; // Vertical view angle (field of view)
-    point3 lookfrom = point3(0, 0, 0); // Point camera is looking from
-    point3 lookat = point3(0, 0, -1); // Point camera is looking at
-    vec3 vup = vec3(0, 1, 0); // Camera-relative "up" direction
+    double aspect_ratio        = 16.0 / 9.0;              // Ratio of image width over height
+    size_t image_width         = 400;                     // Rendered image width in pixel count
+    int    samples_per_pixel   = 10;                      // Count of random samples for each pixel
+    int    max_depth           = 50;                      // Maximum number of ray bounces into scene
+    double pixel_samples_scale = 1.0 / samples_per_pixel; // Color scale factor for a sum of pixel samples
+    double vfov                = 90;                      // Vertical view angle (field of view)
+    point3 lookfrom            = point3(0, 0, 0);         // Point camera is looking from
+    point3 lookat              = point3(0, 0, -1);        // Point camera is looking at
+    vec3   vup                 = vec3(0, 1, 0);           // Camera-relative "up" direction
     /**
      * Constructor for the camera class.
      * @param world The hittable world to render
@@ -36,11 +36,11 @@ public:
 private:
     /* Private Camera Variables Here */
     size_t image_height{1}; // Rendered image height
-    point3 center; // Camera center
-    point3 pixel00_loc; // Location of pixel 0, 0
-    vec3 pixel_delta_u; // Offset to pixel to the right
-    vec3 pixel_delta_v; // Offset to pixel below
-    vec3 u, v, w; // Camera frame basis vectors
+    point3 center;          // Camera center
+    point3 pixel00_loc;     // Location of pixel 0, 0
+    vec3   pixel_delta_u;   // Offset to pixel to the right
+    vec3   pixel_delta_v;   // Offset to pixel below
+    vec3   u, v, w;         // Camera frame basis vectors
 
     /**
      * Initializes a variety of constants and variables used to render the images.
@@ -81,4 +81,4 @@ private:
 };
 
 
-#endif //CAMERA_HPP
+#endif // CAMERA_HPP

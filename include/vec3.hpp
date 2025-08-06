@@ -5,25 +5,23 @@
 #ifndef VEC3_H
 #define VEC3_H
 using type = double;
-#include "rtweekend.hpp"
 #include <iosfwd>
+#include "rtweekend.hpp"
 
 class vec3 {
 public:
     type e[3];
 
-    vec3() : e{0, 0, 0} {
-    }
+    vec3() : e{0, 0, 0} {}
 
-    vec3(const type e0, const type e1, const type e2) : e{e0, e1, e2} {
-    }
+    vec3(const type e0, const type e1, const type e2) : e{e0, e1, e2} {}
 
     [[nodiscard]] type x() const { return e[0]; }
     [[nodiscard]] type y() const { return e[1]; }
     [[nodiscard]] type z() const { return e[2]; }
 
-    vec3 operator-() const { return {-e[0], -e[1], -e[2]}; }
-    type operator[](const int i) const { return e[i]; }
+    vec3  operator-() const { return {-e[0], -e[1], -e[2]}; }
+    type  operator[](const int i) const { return e[i]; }
     type &operator[](const int i) { return e[i]; }
 
     vec3 &operator+=(const vec3 &v) {
@@ -40,27 +38,19 @@ public:
         return *this;
     }
 
-    vec3 &operator/=(const type t) {
-        return *this *= 1 / t;
-    }
+    vec3 &operator/=(const type t) { return *this *= 1 / t; }
 
     [[nodiscard]] type length() const;
 
-    [[nodiscard]] type length_squared() const {
-        return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
-    }
+    [[nodiscard]] type length_squared() const { return e[0] * e[0] + e[1] * e[1] + e[2] * e[2]; }
 
-    static vec3 random() {
-        return {random_double(), random_double(), random_double()};
-    }
+    static vec3 random() { return {random_double(), random_double(), random_double()}; }
 
     static vec3 random(const double min, const double max) {
         return {random_double(min, max), random_double(min, max), random_double(min, max)};
     }
 
-    static vec3 unit_random() {
-        return {random_unit_double(), random_unit_double(), random_unit_double()};
-    }
+    static vec3 unit_random() { return {random_unit_double(), random_unit_double(), random_unit_double()}; }
 
     [[nodiscard]] bool near_zero() const;
 };
@@ -119,4 +109,4 @@ using point3 = vec3;
 
 
 // Vector Utility Functions
-#endif //VEC3_H
+#endif // VEC3_H

@@ -6,16 +6,14 @@
 #define PRETTYPRINT_H
 
 #include <chrono>
-//#include "grid.hpp"
 
 class grid;
 
 class prettyPrint {
-    static constexpr auto tenMs = std::chrono::time_point<std::chrono::high_resolution_clock>(
-        std::chrono::milliseconds(10)
-    );
+    static constexpr auto tenMs =
+            std::chrono::time_point<std::chrono::high_resolution_clock>(std::chrono::milliseconds(10));
     std::chrono::time_point<std::chrono::high_resolution_clock> timeOfLastUpdate{};
-    const grid *image;
+    const grid                                                 *image;
 
     static uint64_t lastPixelsRendered;
 
@@ -36,4 +34,4 @@ public:
 };
 
 
-#endif //PRETTYPRINT_H
+#endif // PRETTYPRINT_H

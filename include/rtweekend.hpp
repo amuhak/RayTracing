@@ -5,11 +5,11 @@
 #ifndef RTWEEKEND_H
 #define RTWEEKEND_H
 
-#include <limits>
 #include <cstdint>
+#include <limits>
 
 constexpr double infinity = std::numeric_limits<double>::infinity();
-constexpr double pi = 3.1415926535897932385;
+constexpr double pi       = 3.1415926535897932385;
 
 // Romu Pseudorandom Number Generators
 //
@@ -52,4 +52,4 @@ double random_unit_double();
  */
 double random_double(double min, double max);
 
-#endif //RTWEEKEND_H
+#endif // RTWEEKEND_H

@@ -30,12 +30,16 @@ public:
     }
 
     [[nodiscard]] double clamp(const double x) const {
-        if (x < min) return min;
-        if (x > max) return max;
+        if (x < min) {
+            return min;
+        }
+        if (x > max) {
+            return max;
+        }
         return x;
     }
 
     static const interval empty, universe;
 };
 
-#endif //INTERVAL_H
+#endif // INTERVAL_H
