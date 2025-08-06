@@ -3,6 +3,9 @@
 //
 
 #include "rtweekend.hpp"
+#include <thread>
+#include <random>
+#include <bit>
 
 thread_local static std::mt19937_64 gen{
     std::hash<std::thread::id>{}(std::this_thread::get_id())

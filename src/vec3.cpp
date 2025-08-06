@@ -3,6 +3,8 @@
 //
 
 #include "vec3.hpp"
+#include <cmath>
+#include <iostream>
 
 std::ostream &operator<<(std::ostream &out, const vec3 &v) {
     return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2];
@@ -74,4 +76,14 @@ vec3 refract(const vec3 &uv, const vec3 &n, double etai_over_etat) {
     vec3 r_out_perp = etai_over_etat * (uv + cos_theta * n);
     vec3 r_out_parallel = -std::sqrt(std::fabs(1.0 - r_out_perp.length_squared())) * n;
     return r_out_perp + r_out_parallel;
+}
+
+[[nodiscard]] type vec3::length() const {
+    return std::sqrt(length_squared());
+}
+
+[[nodiscard]] bool vec3::near_zero() const {
+    // Return true if the vector is close to zero in all dimensions.
+    constexpr auto s = 1e-8;
+    return (std::fabs(e[0]) < s) && (std::fabs(e[1]) < s) && (std::fabs(e[2]) < s);
 }

@@ -7,13 +7,17 @@
 
 #include "hittable.hpp"
 #include "color.hpp"
+#include <cmath>
 
 class material {
 public:
     virtual ~material() = default;
 
     virtual bool scatter(
-        const ray &r_in, const hit_record &rec, color &attenuation, ray &scattered
+        [[maybe_unused]] const ray &r_in,
+        [[maybe_unused]] const hit_record &rec,
+        [[maybe_unused]] color &attenuation,
+        [[maybe_unused]] ray &scattered
     ) const {
         return false;
     }
@@ -24,8 +28,9 @@ public:
     explicit lambertian(const color &albedo) : albedo(albedo) {
     }
 
-    bool scatter(const ray &r_in, const hit_record &rec, color &attenuation, ray &scattered)
-    const override {
+    bool scatter(
+        [[maybe_unused]] const ray &r_in, const hit_record &rec, color &attenuation, ray &scattered
+    ) const override {
         auto scatter_direction = rec.normal + random_unit_vector();
         // Catch 0 length vector
         if (scatter_direction.near_zero()) scatter_direction = rec.normal;

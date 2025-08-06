@@ -2,15 +2,25 @@
 // Created by amuhak on 8/2/2025.
 //
 
-#include "prettyPrint.h"
+#include "prettyPrint.hpp"
+#include "grid.hpp"
 #include <thread>
+
+#if defined(_WIN32)
+#define WIN32_LEAN_AND_MEAN
+#define VC_EXTRALEAN
+#include <Windows.h>
+#elif defined(__linux__)
+#include <sys/ioctl.h>
+#include <unistd.h>
+#endif
 
 void prettyPrint::get_terminal_size(uint32_t &width, uint32_t &height) {
 #if defined(_WIN32)
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-    width = static_cast<int>(csbi.srWindow.Right - csbi.srWindow.Left + 1);
-    height = static_cast<int>(csbi.srWindow.Bottom - csbi.srWindow.Top + 1);
+    width = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+    height = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
 #elif defined(__linux__)
     struct winsize w;
     // ioctl is a low-level system call to manipulate device parameters.
@@ -23,7 +33,7 @@ void prettyPrint::get_terminal_size(uint32_t &width, uint32_t &height) {
     width = 80;
     height = 24;
 #endif // _WIN32 || __linux__
-    // Make sure the values arent crazy:
+    // Make sure the values aren't crazy:
     if (width > 1000 || height > 500) {
         width = 80;
         height = 24;
@@ -54,7 +64,7 @@ void prettyPrint::update(const size_t done, const size_t total) {
     // Now, time_left will also be of type float_ms and will have the correct value.
     auto time_left = (total - done) * time_to_render_one_pixel;
 
-    auto hours = std::chrono::duration_cast<std::chrono::hours>(time_left);
+    const auto hours = std::chrono::duration_cast<std::chrono::hours>(time_left);
 
     // 2. Subtract the hours part to get the remainder
     time_left -= hours;
@@ -105,9 +115,7 @@ void prettyPrint::update(const size_t done, const size_t total) {
 
 void prettyPrint::run() const {
     while (keepUpdating) {
-        // Wait for 100ms
         std::this_thread::sleep_for(SLEEP_DURATION);
-        // Update the status
         update(image->total_done.load(std::memory_order_relaxed), image->size);
     }
     update(image->size, image->size);

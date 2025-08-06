@@ -6,14 +6,15 @@
 #define SPHERE_H
 
 #include "hittable.hpp"
-#include "vec3.hpp"
 #include <memory>
+#include <utility>
+#include <cmath>
 
 class sphere : public hittable {
 public:
     sphere(const point3 &center, const double radius, std::shared_ptr<material> mat) : center(center),
         radius(std::fmax(0, radius)),
-        mat(mat) {
+        mat(std::move(mat)) {
     }
 
     bool hit(const ray &r, interval ray_t, hit_record &rec) const override;

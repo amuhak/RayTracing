@@ -6,9 +6,7 @@
 #define VEC3_H
 using type = double;
 #include "rtweekend.hpp"
-#include <cmath>
-#include <iostream>
-
+#include <iosfwd>
 
 class vec3 {
 public:
@@ -46,9 +44,7 @@ public:
         return *this *= 1 / t;
     }
 
-    [[nodiscard]] type length() const {
-        return std::sqrt(length_squared());
-    }
+    [[nodiscard]] type length() const;
 
     [[nodiscard]] type length_squared() const {
         return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
@@ -66,11 +62,7 @@ public:
         return {random_unit_double(), random_unit_double(), random_unit_double()};
     }
 
-    bool near_zero() const {
-        // Return true if the vector is close to zero in all dimensions.
-        constexpr auto s = 1e-8;
-        return (std::fabs(e[0]) < s) && (std::fabs(e[1]) < s) && (std::fabs(e[2]) < s);
-    }
+    [[nodiscard]] bool near_zero() const;
 };
 
 /**

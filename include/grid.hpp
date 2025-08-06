@@ -5,6 +5,8 @@
 #ifndef GRID_HPP
 #define GRID_HPP
 #include <atomic>
+#include <vector>
+#include <iostream>
 #include "color.hpp"
 
 constexpr size_t MAX_STRING_SIZE = 1000000;
@@ -32,20 +34,7 @@ public:
      * @param y the column number
      * @param c the color to set
      */
-    void set(const uint32_t x, const uint32_t y, const color &c) {
-        const size_t idx = (width * x + y) * 4; // 4 bytes per pixel (RGBA)
-        data.at(idx + 3) = 255; // Set alpha to 255 (opaque)
-        const auto &[r, g, b] = convert_color(c);
-        // Dont need to range check since +3 is valid
-        data[idx] = r; // Red
-        data[idx + 1] = g; // Green
-        data[idx + 2] = b; // Blue
-        done++;
-        if (done >= DONE_THRESHOLD) {
-            total_done += done;
-            done = 0;
-        }
-    }
+    void set(uint32_t x, uint32_t y, const color &c);
 
     void write(std::ostream &out) const;
 };

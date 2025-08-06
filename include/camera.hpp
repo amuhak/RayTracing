@@ -5,11 +5,14 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include "grid.hpp"
+#include <atomic>
+#include "vec3.hpp"
 #include "color.hpp"
-#include "hittable.hpp"
-#include "main.hpp"
 
+
+class hittable;
+class ray;
+class grid;
 
 class camera {
 public:

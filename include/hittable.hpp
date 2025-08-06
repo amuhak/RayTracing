@@ -7,6 +7,7 @@
 
 #include "ray.hpp"
 #include "interval.hpp"
+#include "vec3.hpp"
 #include <memory>
 
 class material;

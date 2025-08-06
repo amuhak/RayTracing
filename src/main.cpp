@@ -1,5 +1,8 @@
 #include "main.hpp"
+#include "hittable_list.hpp"
+#include "sphere.hpp"
 #include "camera.hpp"
+#include "material.hpp"
 
 int main() {
     hittable_list world;
@@ -20,7 +23,7 @@ int main() {
 
     cam.aspect_ratio = 16.0 / 9.0;
     cam.image_width = 500;
-    cam.samples_per_pixel = 10000;
+    cam.samples_per_pixel = 100;
     cam.max_depth = 50;
 
     cam.render(world, 28);

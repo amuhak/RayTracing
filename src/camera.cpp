@@ -1,13 +1,18 @@
 //
 // Created by amuhak on 4/7/2025.
 //
-#include "camera.hpp"
-#include "grid.hpp"
-#include "prettyPrint.h"
-#include "display.hpp"
 #include <thread>
 #include <vector>
 #include <atomic>
+#include <fstream>
+#include <optional>
+
+#include "camera.hpp"
+#include "prettyPrint.hpp"
+#include "grid.hpp"
+#include "display.hpp"
+#include "material.hpp"
+
 
 constexpr int WORK_PER_WORKER = 16; // number of pixels each worker will render in a single call
 constexpr bool USE_PRETTY_PRINT = true; // whether to use pretty print or not
