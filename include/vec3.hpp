@@ -65,13 +65,19 @@ public:
     static vec3 unit_random() {
         return {random_unit_double(), random_unit_double(), random_unit_double()};
     }
+
+    bool near_zero() const {
+        // Return true if the vector is close to zero in all dimensions.
+        constexpr auto s = 1e-8;
+        return (std::fabs(e[0]) < s) && (std::fabs(e[1]) < s) && (std::fabs(e[2]) < s);
+    }
 };
 
 /**
  * Generate a random unit vector.
  * @return A random unit vector
  */
-inline vec3 random_unit_vector();
+vec3 random_unit_vector();
 
 /**
  * Generate a random vector that is in the same hemisphere as the normal.
@@ -79,6 +85,8 @@ inline vec3 random_unit_vector();
  * @return A random vector in the hemisphere defined by the normal
  */
 vec3 random_on_hemisphere(const vec3 &normal);
+
+vec3 reflect(const vec3 &v, const vec3 &n);
 
 std::ostream &operator<<(std::ostream &out, const vec3 &v);
 

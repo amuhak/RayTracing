@@ -12,15 +12,14 @@
 #include "camera.hpp"
 
 
-constexpr int samples_per_pixel = 1000;
-constexpr int max_depth = 50; // Maximum number of ray bounces
-constexpr double pixel_samples_scale{1.0 / samples_per_pixel}; // Color scale factor for a sum of pixel samples
-
 class camera {
 public:
     /* Public Camera Parameters Here */
     double aspect_ratio = 16.0 / 9.0; // Ratio of image width over height
     size_t image_width = 400; // Rendered image width in pixel count
+    int samples_per_pixel = 10;
+    int max_depth = 50;
+    double pixel_samples_scale{1.0 / samples_per_pixel}; // Color scale factor for a sum of pixel samples
 
     /**
      * Constructor for the camera class.

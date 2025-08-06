@@ -48,6 +48,7 @@ else ()
             src/prettyPrint.cpp
             src/rtweekend.cpp
             src/display.cpp
+            src/material.cpp
     )
 endif ()
 
