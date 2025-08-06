@@ -10,8 +10,6 @@
 #include <thread>
 
 class display {
-
-
 public:
     bool keepUpdating{true};
 

@@ -47,16 +47,7 @@ public:
         }
     }
 
-    void write(std::ostream &out) const {
-        std::string ans;
-        for (size_t i = 0; i < data.size(); i += MAX_STRING_SIZE) {
-            for (size_t j = i; j < std::min(i + MAX_STRING_SIZE, data.size()); j += 4) {
-                write_color(ans, data[j], data[j + 1], data[j + 2]);
-            }
-            out << ans;
-            ans.clear();
-        }
-    }
+    void write(std::ostream &out) const;
 };
 
 

@@ -10,7 +10,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Dependencies
-find_package(SFML COMPONENTS Network Graphics Window Audio System CONFIG REQUIRED)
+find_package(SFML COMPONENTS Graphics Window System CONFIG REQUIRED)
+find_package(Stb REQUIRED)
 
 if (GPU)
     # Enable CUDA
@@ -59,7 +60,11 @@ endif ()
 target_include_directories(RayTracing PRIVATE ${PROJECT_SOURCE_DIR}/include)
 
 # Link SFML libraries
-target_link_libraries(RayTracing PRIVATE SFML::Network SFML::Graphics SFML::Window SFML::Audio SFML::System)
+target_link_libraries(RayTracing PRIVATE
+        SFML::Graphics
+        SFML::Window
+        SFML::System
+)
 
 # Windows.h header fix
 target_compile_definitions(RayTracing PRIVATE NOMINMAX)
