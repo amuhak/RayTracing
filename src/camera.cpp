@@ -17,7 +17,7 @@
 
 constexpr int  WORK_PER_WORKER  = 16;    // number of pixels each worker will render in a single call
 constexpr bool USE_PRETTY_PRINT = true;  // whether to use pretty print or not
-constexpr bool USE_DISPLAY      = false; // whether to use display or not
+constexpr bool USE_DISPLAY      = true; // whether to use display or not
 
 void camera::render_worker(std::atomic<size_t> &next_pixel_idx, const hittable &world, grid &img) const {
     const size_t image_total = image_width * image_height;
