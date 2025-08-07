@@ -26,6 +26,8 @@ public:
     point3 lookfrom            = point3(0, 0, 0);         // Point camera is looking from
     point3 lookat              = point3(0, 0, -1);        // Point camera is looking at
     vec3   vup                 = vec3(0, 1, 0);           // Camera-relative "up" direction
+    double defocus_angle       = 0;                       // Variation angle of rays through each pixel
+    double focus_dist          = 10; // Distance from camera lookfrom point to plane of perfect focus
     /**
      * Constructor for the camera class.
      * @param world The hittable world to render
@@ -41,6 +43,8 @@ private:
     vec3   pixel_delta_u;   // Offset to pixel to the right
     vec3   pixel_delta_v;   // Offset to pixel below
     vec3   u, v, w;         // Camera frame basis vectors
+    vec3   defocus_disk_u;  // Defocus disk horizontal radius
+    vec3   defocus_disk_v;  // Defocus disk vertical radius
 
     /**
      * Initializes a variety of constants and variables used to render the images.
@@ -64,6 +68,8 @@ private:
      * @return A ray from the camera to a point.
      */
     [[nodiscard]] ray get_ray(uint32_t i, uint32_t j) const;
+
+    point3 defocus_disk_sample() const;
 
     /**
      * @return random x and y between -0.5 and 0.5 and a z of 0.

@@ -6,33 +6,61 @@
 #include <cmath>
 #include <iostream>
 
-std::ostream &operator<<(std::ostream &out, const vec3 &v) { return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2]; }
+std::ostream &operator<<(std::ostream &out, const vec3 &v) {
+    return out << v.e[0] << ' ' << v.e[1] << ' ' << v.e[2];
+}
 
-vec3 operator+(const vec3 &u, const vec3 &v) { return {u.e[0] + v.e[0], u.e[1] + v.e[1], u.e[2] + v.e[2]}; }
+vec3 operator+(const vec3 &u, const vec3 &v) {
+    return {u.e[0] + v.e[0], u.e[1] + v.e[1], u.e[2] + v.e[2]};
+}
 
-vec3 operator-(const vec3 &u, const vec3 &v) { return {u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2]}; }
+vec3 operator-(const vec3 &u, const vec3 &v) {
+    return {u.e[0] - v.e[0], u.e[1] - v.e[1], u.e[2] - v.e[2]};
+}
 
-vec3 operator*(const vec3 &u, const vec3 &v) { return {u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2]}; }
+vec3 operator*(const vec3 &u, const vec3 &v) {
+    return {u.e[0] * v.e[0], u.e[1] * v.e[1], u.e[2] * v.e[2]};
+}
 
-vec3 operator*(const double t, const vec3 &v) { return {t * v.e[0], t * v.e[1], t * v.e[2]}; }
+vec3 operator*(const double t, const vec3 &v) {
+    return {t * v.e[0], t * v.e[1], t * v.e[2]};
+}
 
-vec3 operator*(const vec3 &v, const type t) { return t * v; }
+vec3 operator*(const vec3 &v, const type t) {
+    return t * v;
+}
 
-vec3 operator/(const vec3 &v, const type t) { return 1 / t * v; }
+vec3 operator/(const vec3 &v, const type t) {
+    return 1 / t * v;
+}
 
-type dot(const vec3 &u, const vec3 &v) { return u.e[0] * v.e[0] + u.e[1] * v.e[1] + u.e[2] * v.e[2]; }
+type dot(const vec3 &u, const vec3 &v) {
+    return u.e[0] * v.e[0] + u.e[1] * v.e[1] + u.e[2] * v.e[2];
+}
 
 vec3 cross(const vec3 &u, const vec3 &v) {
     return {u.e[1] * v.e[2] - u.e[2] * v.e[1], u.e[2] * v.e[0] - u.e[0] * v.e[2], u.e[0] * v.e[1] - u.e[1] * v.e[0]};
 }
 
-vec3 unit_vector(const vec3 &v) { return v / v.length(); }
+vec3 unit_vector(const vec3 &v) {
+    return v / v.length();
+}
+
+vec3 random_in_unit_disk() {
+    while (true) {
+        auto p = vec3(random_double(-1, 1), random_double(-1, 1), 0);
+        if (p.length_squared() < 1) {
+            return p;
+        }
+    }
+}
 
 vec3 random_unit_vector() {
     while (true) {
         vec3 p = vec3::unit_random();
-        if (const auto lensq = p.length_squared(); 1e-160 < lensq && lensq <= 1)
+        if (const auto lensq = p.length_squared(); 1e-160 < lensq && lensq <= 1) {
             return p / sqrt(lensq);
+        }
     }
 }
 
@@ -43,7 +71,9 @@ vec3 random_on_hemisphere(const vec3 &normal) {
     return -on_unit_sphere;
 }
 
-vec3 reflect(const vec3 &v, const vec3 &n) { return v - 2 * dot(v, n) * n; }
+vec3 reflect(const vec3 &v, const vec3 &n) {
+    return v - 2 * dot(v, n) * n;
+}
 
 vec3 refract(const vec3 &uv, const vec3 &n, double etai_over_etat) {
     auto cos_theta      = std::fmin(dot(-uv, n), 1.0);
@@ -52,7 +82,9 @@ vec3 refract(const vec3 &uv, const vec3 &n, double etai_over_etat) {
     return r_out_perp + r_out_parallel;
 }
 
-[[nodiscard]] type vec3::length() const { return std::sqrt(length_squared()); }
+[[nodiscard]] type vec3::length() const {
+    return std::sqrt(length_squared());
+}
 
 [[nodiscard]] bool vec3::near_zero() const {
     // Return true if the vector is close to zero in all dimensions.

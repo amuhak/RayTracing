@@ -117,10 +117,9 @@ void camera::initialize() {
     center = lookfrom;
 
     // Viewport widths less than one are ok since they are real valued.
-    const double focal_length    = (lookfrom - lookat).length();
     const double theta           = degrees_to_radians(vfov);
     const double h               = std::tan(theta / 2);
-    const double viewport_height = 2 * h * focal_length;
+    const auto   viewport_height = 2 * h * focus_dist;
     const double viewport_width =
             viewport_height * (static_cast<double>(image_width) / static_cast<double>(image_height));
 
@@ -137,9 +136,15 @@ void camera::initialize() {
     pixel_delta_v = viewport_v / image_height;
 
     // Calculate the location of the upper left pixel.
-    auto viewport_upper_left = center - (focal_length * w) - viewport_u / 2 - viewport_v / 2;
+    auto viewport_upper_left = center - (focus_dist * w) - viewport_u / 2 - viewport_v / 2;
 
     pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+
+    // Calculate the camera defocus disk basis vectors.
+    const double defocus_radius = focus_dist * std::tan(degrees_to_radians(defocus_angle / 2));
+
+    defocus_disk_u = u * defocus_radius;
+    defocus_disk_v = v * defocus_radius;
 }
 
 [[nodiscard]] color camera::ray_color(const ray &r, int depth, const hittable &world) {
@@ -158,19 +163,31 @@ void camera::initialize() {
         return color(0, 0, 0);
     }
 
+    // Calculate the camera defocus disk basis vectors.
     const vec3   unit_direction = unit_vector(r.direction());
     const double a              = 0.5 * (unit_direction.y() + 1.0);
     return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
 }
 
 [[nodiscard]] ray camera::get_ray(const uint32_t i, const uint32_t j) const {
+    // Construct a camera ray originating from the defocus disk and directed at a randomly
+    // sampled point around the pixel location i, j.
     auto offset       = sample_square();
     auto pixel_sample = pixel00_loc + (i + offset.x()) * pixel_delta_u + (j + offset.y()) * pixel_delta_v;
 
-    auto ray_origin    = center;
+    auto ray_origin    = (defocus_angle <= 0) ? center : defocus_disk_sample();
     auto ray_direction = pixel_sample - ray_origin;
 
     return {ray_origin, ray_direction};
 }
 
-[[nodiscard]] vec3 camera::sample_square() { return {random_double() - 0.5, random_double() - 0.5, 0}; }
+
+point3 camera::defocus_disk_sample() const {
+    // Returns a random point in the camera defocus disk.
+    auto p = random_in_unit_disk();
+    return center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
+}
+
+[[nodiscard]] vec3 camera::sample_square() {
+    return {random_double() - 0.5, random_double() - 0.5, 0};
+}
