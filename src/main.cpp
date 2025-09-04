@@ -1,4 +1,5 @@
 #include "main.hpp"
+#include <iostream>
 #include <thread>
 #include "camera.hpp"
 #include "hittable_list.hpp"
@@ -7,6 +8,8 @@
 
 int main() {
     hittable_list world;
+
+    auto start_time = std::chrono::high_resolution_clock::now();
 
     auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));
     world.add(make_shared<sphere>(point3(0, -1000, 0), 1000, ground_material));
@@ -62,4 +65,10 @@ int main() {
     cam.focus_dist        = 10.0;
 
     cam.render(world, std::thread::hardware_concurrency());
+
+    auto end_time = std::chrono::high_resolution_clock::now();
+
+    std::cout << "Render Time: "
+            << std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time).count()
+            << " seconds.\n";
 }
