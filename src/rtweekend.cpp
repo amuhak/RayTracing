@@ -51,3 +51,8 @@ double random_double(const double min, const double max) {
     std::uniform_real_distribution dis2(min, max);
     return dis2(gen);
 }
+
+int random_int(const int min, const int max) {
+    // Returns a random integer in [min,max].
+    return static_cast<int>(random_double(min, max + 1));
+}

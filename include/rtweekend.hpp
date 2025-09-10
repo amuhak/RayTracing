@@ -52,4 +52,11 @@ double random_unit_double();
  */
 double random_double(double min, double max);
 
+/**
+ * @param min minimum value
+ * @param max maximum value
+ * @return A random integer in the range [min, max].
+ */
+int random_int(int min, int max);
+
 #endif // RTWEEKEND_H

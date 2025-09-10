@@ -6,6 +6,7 @@
 #define HITTABLE_H
 
 #include <memory>
+#include "aabb.hpp"
 #include "interval.hpp"
 #include "ray.hpp"
 #include "vec3.hpp"
@@ -31,6 +32,8 @@ public:
     virtual ~hittable() = default;
 
     virtual bool hit(const ray &r, interval ray_t, hit_record &rec) const = 0;
+
+    virtual aabb bounding_box() const = 0;
 };
 
 

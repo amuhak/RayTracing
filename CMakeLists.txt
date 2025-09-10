@@ -50,6 +50,8 @@ else ()
             src/rtweekend.cpp
             src/display.cpp
             src/material.cpp
+            src/aabb.cpp
+            src/bvh.cpp
     )
 endif ()
 
