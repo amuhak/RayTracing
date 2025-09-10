@@ -20,7 +20,9 @@ uint64_t romuDuoJr_random() {
     return xp;
 }
 
-double degrees_to_radians(const double degrees) { return degrees * pi / 180.0; }
+double degrees_to_radians(const double degrees) {
+    return degrees * pi / 180.0;
+}
 
 /**
  * @return Random real in [0,1)
@@ -41,7 +43,9 @@ double random_double() {
  *
  * @return A random double in the range [-1, 1].
  */
-double random_unit_double() { return random_double() * 2.0 - 1.0; }
+double random_unit_double() {
+    return random_double() * 2.0 - 1.0;
+}
 
 double random_double(const double min, const double max) {
     std::uniform_real_distribution dis2(min, max);

@@ -120,7 +120,7 @@ void camera::initialize() {
     const double theta           = degrees_to_radians(vfov);
     const double h               = std::tan(theta / 2);
     const auto   viewport_height = 2 * h * focus_dist;
-    const double viewport_width  =
+    const double viewport_width =
             viewport_height * (static_cast<double>(image_width) / static_cast<double>(image_height));
 
     w = unit_vector(lookfrom - lookat);
