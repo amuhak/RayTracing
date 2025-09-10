@@ -54,7 +54,7 @@ int main() {
     camera cam;
 
     cam.aspect_ratio      = 16.0 / 9.0;
-    cam.image_width       = 1920 * 2;
+    cam.image_width       = 500;
     cam.samples_per_pixel = 1000;
     cam.max_depth         = 50;
     cam.vfov              = 20;
@@ -68,7 +68,6 @@ int main() {
 
     auto end_time = std::chrono::high_resolution_clock::now();
 
-    std::cout << "Render Time: "
-            << std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time).count()
-            << " seconds.\n";
+    std::cout << "Render Time: " << std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time).count()
+              << " seconds.\n";
 }

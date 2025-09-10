@@ -12,13 +12,20 @@
 
 class sphere : public hittable {
 public:
-    sphere(const point3 &center, const double radius, std::shared_ptr<material> mat) :
-        center(center), radius(std::fmax(0, radius)), mat(std::move(mat)) {}
+    // Stationary Sphere
+    sphere(const point3 &static_center, double radius, std::shared_ptr<material> mat) :
+        center(static_center, vec3(0, 0, 0)), radius(std::fmax(0, radius)), mat(mat) {
+    }
+
+    // Moving Sphere
+    sphere(const point3 &center1, const point3 &center2, double radius, std::shared_ptr<material> mat) :
+        center(center1, center2 - center1), radius(std::fmax(0, radius)), mat(mat) {
+    }
 
     bool hit(const ray &r, interval ray_t, hit_record &rec) const override;
 
 private:
-    point3                    center;
+    ray                       center;
     double                    radius;
     std::shared_ptr<material> mat;
 };

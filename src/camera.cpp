@@ -15,8 +15,8 @@
 #include "rtweekend.hpp"
 
 
-constexpr int  WORK_PER_WORKER  = 16;    // number of pixels each worker will render in a single call
-constexpr bool USE_PRETTY_PRINT = true;  // whether to use pretty print or not
+constexpr int  WORK_PER_WORKER  = 16;   // number of pixels each worker will render in a single call
+constexpr bool USE_PRETTY_PRINT = true; // whether to use pretty print or not
 constexpr bool USE_DISPLAY      = true; // whether to use display or not
 
 void camera::render_worker(std::atomic<size_t> &next_pixel_idx, const hittable &world, grid &img) const {
@@ -120,7 +120,7 @@ void camera::initialize() {
     const double theta           = degrees_to_radians(vfov);
     const double h               = std::tan(theta / 2);
     const auto   viewport_height = 2 * h * focus_dist;
-    const double viewport_width =
+    const double viewport_width  =
             viewport_height * (static_cast<double>(image_width) / static_cast<double>(image_height));
 
     w = unit_vector(lookfrom - lookat);
@@ -177,8 +177,9 @@ void camera::initialize() {
 
     auto ray_origin    = (defocus_angle <= 0) ? center : defocus_disk_sample();
     auto ray_direction = pixel_sample - ray_origin;
+    auto ray_time      = random_double();
 
-    return {ray_origin, ray_direction};
+    return {ray_origin, ray_direction, ray_time};
 }
 
 

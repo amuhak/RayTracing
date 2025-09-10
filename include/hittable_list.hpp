@@ -19,11 +19,17 @@ public:
 
     hittable_list() = default;
 
-    explicit hittable_list(const shared_ptr<hittable> &object) { add(object); }
+    explicit hittable_list(const shared_ptr<hittable> &object) {
+        add(object);
+    }
 
-    void clear() { objects.clear(); }
+    void clear() {
+        objects.clear();
+    }
 
-    void add(const shared_ptr<hittable> &object) { objects.push_back(object); }
+    void add(const shared_ptr<hittable> &object) {
+        objects.push_back(object);
+    }
 
     bool hit(const ray &r, interval ray_t, hit_record &rec) const override {
         hit_record temp_rec;

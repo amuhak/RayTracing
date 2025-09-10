@@ -21,7 +21,8 @@ public:
 
 class lambertian : public material {
 public:
-    explicit lambertian(const color &albedo) : albedo(albedo) {}
+    explicit lambertian(const color &albedo) : albedo(albedo) {
+    }
 
     bool scatter([[maybe_unused]] const ray &r_in, const hit_record &rec, color &attenuation,
                  ray &scattered) const override {
@@ -30,6 +31,7 @@ public:
         if (scatter_direction.near_zero())
             scatter_direction = rec.normal;
         scattered   = ray(rec.p, scatter_direction);
+        scattered   = ray(rec.p, scatter_direction, r_in.time());
         attenuation = albedo;
         return true;
     }
@@ -41,12 +43,13 @@ private:
 
 class metal : public material {
 public:
-    metal(const color &albedo, const double fuzz) : albedo(albedo), fuzz(fuzz < 1 ? fuzz : 1) {}
+    metal(const color &albedo, const double fuzz) : albedo(albedo), fuzz(fuzz < 1 ? fuzz : 1) {
+    }
 
     bool scatter(const ray &r_in, const hit_record &rec, color &attenuation, ray &scattered) const override {
         vec3 reflected = reflect(r_in.direction(), rec.normal);
         reflected      = unit_vector(reflected) + (fuzz * random_unit_vector());
-        scattered      = ray(rec.p, reflected);
+        scattered      = ray(rec.p, reflected, r_in.time());
         attenuation    = albedo;
         return dot(scattered.direction(), rec.normal) > 0;
     }
@@ -58,7 +61,8 @@ private:
 
 class dielectric : public material {
 public:
-    dielectric(double refraction_index) : refraction_index(refraction_index) {}
+    dielectric(double refraction_index) : refraction_index(refraction_index) {
+    }
 
     bool scatter(const ray &r_in, const hit_record &rec, color &attenuation, ray &scattered) const override {
         attenuation     = color(1.0, 1.0, 1.0);
@@ -77,7 +81,7 @@ public:
             direction = refract(unit_direction, rec.normal, ri);
         }
 
-        scattered = ray(rec.p, direction);
+        scattered = ray(rec.p, direction, r_in.time());
         return true;
     }
 
