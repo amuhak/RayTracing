@@ -4,6 +4,8 @@ This is a ray tracing project implemented in C++ with a GUI. It is heavily inspi
 by [Ray Tracing in One Weekend](https://raytracing.github.io/).
 I can not recommend the books enough.
 
+![Final Render, Recompressed](FinalRender.png)
+
 It is a CMake project and should be easy to build on any platform. 
 It has been tested on Windows and Linux.
 
@@ -22,15 +24,14 @@ The dependencies are:
 ## Building
 To build the project, run the following commands:
 
-```bash
+On Windows (PowerShell, Visual Studio Terminal):
+```powershell
 cmake --preset cmake-release
 cmake --build --preset cmake-release --config Release
 ```
 
-### Full Build Instructions
-
 On a Debian like system:
-```
+```bash
 sudo apt update && sudo apt upgrade
 sudo apt install git gcc g++ zip unzip wget clang cmake build-essential curl tar pkg-config libx11-dev libxi-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev
 git clone https://github.com/microsoft/vcpkg.git
