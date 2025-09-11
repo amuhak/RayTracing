@@ -1,5 +1,6 @@
 #include "main.hpp"
 #include <iostream>
+#include <chrono>
 #include <thread>
 #include "bvh.hpp"
 #include "camera.hpp"
