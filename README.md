@@ -34,9 +34,9 @@ On a Debian like system:
 sudo apt update && sudo apt upgrade
 sudo apt install git gcc g++ zip unzip wget clang cmake build-essential curl tar pkg-config libx11-dev libxi-dev libxrandr-dev libxcursor-dev libxi-dev libudev-dev libgl1-mesa-dev
 git clone https://github.com/microsoft/vcpkg.git
+git clone https://github.com/amuhak/RayTracing.git
 cd vcpkg
 ./bootstrap-vcpkg.sh
-git clone https://github.com/amuhak/RayTracing.git
 cd ../RayTracing/
 cmake --preset cmake-release -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_MAKE_PROGRAM=/usr/bin/make
 cmake --build --preset cmake-release --config Release -j
