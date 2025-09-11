@@ -37,6 +37,7 @@ git clone https://github.com/microsoft/vcpkg.git
 git clone https://github.com/amuhak/RayTracing.git
 cd vcpkg
 ./bootstrap-vcpkg.sh
+export VCPKG_ROOT=$(pwd)
 cd ../RayTracing/
 cmake --preset cmake-release -DCMAKE_CXX_COMPILER=/usr/bin/clang++ -DCMAKE_MAKE_PROGRAM=/usr/bin/make
 cmake --build --preset cmake-release --config Release -j
