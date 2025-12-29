@@ -32,7 +32,7 @@ endif ()
 
 if (GPU STREQUAL "ON")
     add_executable(RayTracing
-            src/main.cu
+            cuda/main.cu
     )
 else ()
     add_executable(RayTracing
@@ -86,10 +86,21 @@ set(WARNING_FLAGS
 
 if (MSVC)
     # MSVC
-    target_compile_options(RayTracing PRIVATE /W4 /permissive-
-            $<$<CONFIG:Debug>:/Od /Zi>
-            $<$<CONFIG:Release>:/O2 /GL /Ot /arch:AVX2>
+    # --- C++ Sources Only ---
+    target_compile_options(RayTracing PRIVATE
+            $<$<COMPILE_LANGUAGE:CXX>:-W4 -permissive->
+            $<$<COMPILE_LANGUAGE:CXX>:$<$<CONFIG:Debug>:-Od -Zi>>
+            $<$<COMPILE_LANGUAGE:CXX>:$<$<CONFIG:Release>:-O2 -GL -Ot -arch:AVX2>>
     )
+
+    # --- CUDA Sources Only ---
+    target_compile_options(RayTracing PRIVATE
+            $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=-W4 -Xcompiler=-permissive->
+            $<$<COMPILE_LANGUAGE:CUDA>:$<$<CONFIG:Debug>:-Xcompiler=-Od -Xcompiler=-Zi>>
+            $<$<COMPILE_LANGUAGE:CUDA>:$<$<CONFIG:Release>:-Xcompiler=-O2 -Xcompiler=-Ot>>
+    )
+
+    # Link options (LTCG matches /GL)
     target_link_options(RayTracing PRIVATE
             $<$<CONFIG:Release>:/LTCG>
     )
@@ -126,7 +137,7 @@ endif ()
 if (GPU)
     set_target_properties(RayTracing PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
     target_compile_options(RayTracing PRIVATE
-            $<$<COMPILE_LANGUAGE:CUDA>:$<$<CONFIG:Debug>:-G -g -O0 -Wall>>
+            $<$<COMPILE_LANGUAGE:CUDA>:$<$<CONFIG:Debug>:-G -g -O0>>
             $<$<COMPILE_LANGUAGE:CUDA>:$<$<CONFIG:Release>:-O3>>
     )
 endif ()
