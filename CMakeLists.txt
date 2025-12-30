@@ -61,7 +61,10 @@ endif ()
 # target_include_directories(RayTracing PRIVATE ${Stb_INCLUDE_DIR})
 
 # Add the header files
-target_include_directories(RayTracing PRIVATE ${PROJECT_SOURCE_DIR}/include)
+if (NOT GPU)
+    target_include_directories(RayTracing PRIVATE ${PROJECT_SOURCE_DIR}/include)
+endif ()
+
 
 # Link SFML libraries
 target_link_libraries(RayTracing PRIVATE

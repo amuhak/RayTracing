@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <stdint.h>
 
 #include "cudaTools.cuh"
 
