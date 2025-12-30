@@ -18,9 +18,9 @@ __global__ void render(float *fb, int max_x, int max_y) {
 
 int main() {
     // Image
-
+    constexpr double   aspect_ratio     = 16.0 / 9.0;
     constexpr uint32_t image_width      = 1200;
-    constexpr uint32_t image_height     = 600;
+    constexpr uint32_t image_height     = std::max(1, static_cast<int>(image_width / aspect_ratio));
     constexpr uint32_t number_of_pixels = image_width * image_height;
     constexpr uint32_t buffer_size      = number_of_pixels * 3;
     float             *fb{nullptr};
