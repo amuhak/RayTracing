@@ -7,8 +7,11 @@
 
 #include <iostream>
 #include <fstream>
-#include <stdint.h>
+#include <cstdint>
+#include <chrono>
 
+#include "vec3.cuh"
+#include "ray.cuh"
 #include "cudaTools.cuh"
 
 #endif // RAYTRACING_MAIN_CUH
