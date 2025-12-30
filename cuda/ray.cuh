@@ -21,7 +21,7 @@ public:
         return dir;
     }
 
-    __device__ point3 at(const double t) const {
+    __device__ point3 at(const float t) const {
         return orig + t * dir;
     }
 
