@@ -19,7 +19,7 @@ __global__ void render(float *fb, int max_x, int max_y) {
 int main() {
     // Image
     constexpr double   aspect_ratio     = 16.0 / 9.0;
-    constexpr uint32_t image_width      = 1200;
+    constexpr uint32_t image_width      = 1080;
     constexpr uint32_t image_height     = std::max(1, static_cast<int>(image_width / aspect_ratio));
     constexpr uint32_t number_of_pixels = image_width * image_height;
     constexpr uint32_t buffer_size      = number_of_pixels * 3;
@@ -41,9 +41,9 @@ int main() {
 
     // Write to output.ppm
 
-    std::ofstream output("output.ppm");
+    std::ofstream output("output.ppm", std::ios::binary);
 
-    output << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+    output << "P6\n" << image_width << ' ' << image_height << "\n255\n";
 
     for (int j = image_height - 1; j >= 0; j--) {
         for (int i = 0; i < image_width; i++) {
@@ -56,7 +56,12 @@ int main() {
             int ig = int(255.999 * g);
             int ib = int(255.999 * b);
 
-            output << ir << ' ' << ig << ' ' << ib << '\n';
+            unsigned char pixel[3];
+            pixel[0] = static_cast<unsigned char>(ir);
+            pixel[1] = static_cast<unsigned char>(ig);
+            pixel[2] = static_cast<unsigned char>(ib);
+
+            output.write(reinterpret_cast<char *>(pixel), 3);
         }
     }
 
