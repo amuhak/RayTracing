@@ -3,20 +3,6 @@
 #include "main.cuh"
 #include "sphere.cuh"
 
-__device__ float hit_sphere(const point3 &center, const float radius, const ray &r) {
-    const vec3 oc           = center - r.origin();
-    const auto a            = r.direction().length_squared();
-    const auto h            = dot(r.direction(), oc);
-    const auto c            = oc.length_squared() - radius * radius;
-    const auto discriminant = h * h - a * c;
-
-    if (discriminant < 0) {
-        return -1.0f;
-    }
-    return (h - std::sqrt(discriminant)) / a;
-}
-
-
 __device__ vec3 color(const ray &r, const hittable *const *d_world) {
     const hittable &world = **d_world;
     hit_record      rec;
