@@ -82,6 +82,12 @@ public:
         return {random_float(min, max, rand_state), random_float(min, max, rand_state),
                 random_float(min, max, rand_state)};
     }
+
+    __device__ bool near_zero() const {
+        // Return true if the vector is close to zero in all dimensions.
+        constexpr float s{1e-8f};
+        return std::fabs(e[0]) < s && std::fabs(e[1]) < s && std::fabs(e[2]) < s;
+    }
 };
 
 // point3 is just an alias for vec3, but useful for geometric clarity in the code.
@@ -151,6 +157,10 @@ __device__ inline vec3 random_on_hemisphere(const vec3 &normal, curandState &ran
     }
     // Else return the opposite point
     return -on_unit_sphere;
+}
+
+__device__ inline vec3 reflect(const vec3 &v, const vec3 &n) {
+    return v - 2 * dot(v, n) * n;
 }
 
 #endif // RAYTRACING_VEC3_CUH

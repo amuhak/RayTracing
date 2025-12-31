@@ -17,9 +17,17 @@ __global__ void create_world(hittable **d_world) {
     // Make the list
     const auto tmp_list = new hittable_list();
 
-    // Add some spheres to the list
-    tmp_list->add(new sphere(vec3(0, 0, -1), 0.5));
-    tmp_list->add(new sphere(vec3(0, -100.5, -1), 100));
+    // Define materials
+    auto material_ground = new lambertian(vec3(0.8, 0.8, 0.0));
+    auto material_center = new lambertian(vec3(0.1, 0.2, 0.5));
+    auto material_left   = new metal(vec3(0.8, 0.8, 0.8), 0.3f);
+    auto material_right  = new metal(vec3(0.8, 0.6, 0.2), 1.0f);
+
+    // Add spheres to the list
+    tmp_list->add(new sphere(vec3(0, -100.5, -1), 100, material_ground));
+    tmp_list->add(new sphere(vec3(0, 0, -1.2), 0.5, material_center));
+    tmp_list->add(new sphere(vec3(-1, 0, -1), 0.5, material_left));
+    tmp_list->add(new sphere(vec3(1, 0, -1), 0.5, material_right));
 
     // Set the world pointer (return)
     *d_world = tmp_list;

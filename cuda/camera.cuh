@@ -7,6 +7,7 @@
 
 #include "hittable.cuh"
 #include "interval.cuh"
+#include "material.cuh"
 #include "ray.cuh"
 
 constexpr int   samples_per_pixel   = 100;
@@ -17,16 +18,21 @@ __device__ vec3 color(const ray &r, const hittable *const *d_world, curandState 
     const hittable &world  = **d_world;
     ray             r_copy = r;
     hit_record      rec;
-    float           ans = 1.0f;
+    vec3            ans{1, 1, 1};
     int             depth{};
 
     for (; depth < max_depth; depth++) {
         if (!world.hit(r_copy, interval(0.001f, infinity), rec)) {
             break;
         }
-        vec3 direction = rec.normal + random_unit_vector(rand_state);
-        r_copy         = ray(rec.p, direction);
-        ans *= 0.1f;
+        ray  scattered;
+        vec3 attenuation;
+        if (rec.mat->scatter(r, rec, attenuation, scattered, rand_state)) {
+            r_copy = scattered;
+            ans    = ans * attenuation;
+        } else {
+            return {0, 0, 0};
+        }
     }
 
     if (depth == max_depth) {

@@ -5,16 +5,19 @@
 #ifndef RAYTRACING_HITTABLE_CUH
 #define RAYTRACING_HITTABLE_CUH
 
+#include "interval.cuh"
 #include "ray.cuh"
 #include "vec3.cuh"
-#include "interval.cuh"
+
+class material;
 
 class hit_record {
 public:
-    point3 p;
-    vec3   normal;
-    float  t;
-    bool   front_face;
+    point3    p;
+    vec3      normal;
+    float     t;
+    material *mat;
+    bool      front_face;
 
     __device__ void set_face_normal(const ray &r, const vec3 &outward_normal) {
         front_face = dot(r.direction(), outward_normal) < 0;
