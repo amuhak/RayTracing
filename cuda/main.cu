@@ -1,18 +1,24 @@
 #include "main.cuh"
 
-__device__ bool hit_sphere(const point3 &center, const float radius, const ray &r) {
-    const vec3  oc           = center - r.origin();
-    const float a            = dot(r.direction(), r.direction());
-    const float b            = -2.0f * dot(r.direction(), oc);
-    const float c            = dot(oc, oc) - radius * radius;
-    const float discriminant = b * b - 4 * a * c;
-    return discriminant >= 0;
+__device__ float hit_sphere(const point3 &center, const float radius, const ray &r) {
+    const vec3 oc           = center - r.origin();
+    const auto a            = r.direction().length_squared();
+    const auto h            = dot(r.direction(), oc);
+    const auto c            = oc.length_squared() - radius * radius;
+    const auto discriminant = h * h - a * c;
+
+    if (discriminant < 0) {
+        return -1.0f;
+    }
+    return (h - std::sqrt(discriminant)) / a;
 }
 
 
 __device__ vec3 color(const ray &r) {
-    if (hit_sphere(point3(0, 0, -1), 0.5, r)) {
-        return {1, 0, 0};
+    const float t = hit_sphere(point3(0, 0, -1), 0.5, r);
+    if (t > 0.0f) {
+        const vec3 N = unit_vector(r.at(t) - vec3(0, 0, -1));
+        return 0.5f * vec3(N.x() + 1, N.y() + 1, N.z() + 1);
     }
 
     const vec3  unit_direction = unit_vector(r.direction());
