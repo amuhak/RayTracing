@@ -1,5 +1,9 @@
 #include "main.cuh"
 
+float gamma_fix(const float input) {
+    return std::sqrt(std::max(0.0f, input));
+}
+
 int main() {
     // Image
     constexpr float    viewport_height  = 2.0;
@@ -60,10 +64,11 @@ int main() {
     render<<<blocks, threads>>>(fp4, image_width, image_height, pixel00_loc, pixel_delta_u, pixel_delta_v,
                                 camera_center, d_world, d_rand_state);
     checkCudaErrors(cudaGetLastError());
+    checkCudaErrors(cudaDeviceSynchronize());
+
     const auto end_time = std::chrono::high_resolution_clock::now();
     const auto elapsed  = end_time - start_time;
     std::cout << "Render time: " << std::chrono::duration<double, std::milli>(elapsed).count() << " ms\n";
-    checkCudaErrors(cudaDeviceSynchronize());
 
     // Write to output.ppm
 
@@ -77,6 +82,10 @@ int main() {
             auto r   = fb[idx++];
             auto g   = fb[idx++];
             auto b   = fb[idx];
+
+            r = gamma_fix(r);
+            g = gamma_fix(g);
+            b = gamma_fix(b);
 
             int ir = int(255.999 * r);
             int ig = int(255.999 * g);
