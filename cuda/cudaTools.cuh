@@ -5,9 +5,10 @@
 #ifndef RAYTRACING_CUDATOOLS_CUH
 #define RAYTRACING_CUDATOOLS_CUH
 #include <iostream>
-
+#include <numbers>
 
 #define checkCudaErrors(val) check_cuda((val), #val, __FILE__, __LINE__)
+
 
 inline void check_cuda(cudaError_t result, char const *const func, const char *const file, int const line) {
     if (result) {
@@ -18,5 +19,13 @@ inline void check_cuda(cudaError_t result, char const *const func, const char *c
         exit(99);
     }
 }
+
+constexpr float infinity = std::numeric_limits<float>::infinity();
+constexpr float pi       = std::numbers::pi_v<float>;
+
+__host__ __device__ constexpr float degrees_to_radians(const float degrees) {
+    return degrees * pi / 180.0f;
+}
+
 
 #endif // RAYTRACING_CUDATOOLS_CUH

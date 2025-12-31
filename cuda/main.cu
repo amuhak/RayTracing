@@ -1,4 +1,7 @@
+#include "hittable.cuh"
+#include "hittable_list.cuh"
 #include "main.cuh"
+#include "sphere.cuh"
 
 __device__ float hit_sphere(const point3 &center, const float radius, const ray &r) {
     const vec3 oc           = center - r.origin();
@@ -14,11 +17,11 @@ __device__ float hit_sphere(const point3 &center, const float radius, const ray 
 }
 
 
-__device__ vec3 color(const ray &r) {
-    const float t = hit_sphere(point3(0, 0, -1), 0.5, r);
-    if (t > 0.0f) {
-        const vec3 N = unit_vector(r.at(t) - vec3(0, 0, -1));
-        return 0.5f * vec3(N.x() + 1, N.y() + 1, N.z() + 1);
+__device__ vec3 color(const ray &r, const hittable *const *d_world) {
+    const hittable &world = **d_world;
+    hit_record      rec;
+    if (world.hit(r, 0, infinity, rec)) {
+        return 0.5f * (rec.normal + vec3(1, 1, 1));
     }
 
     const vec3  unit_direction = unit_vector(r.direction());
@@ -27,7 +30,7 @@ __device__ vec3 color(const ray &r) {
 }
 
 __global__ void render(float4 *fb, const int max_x, const int max_y, const point3 pixel00_loc, const vec3 pixel_delta_u,
-                       const vec3 pixel_delta_v, const point3 camera_center) {
+                       const vec3 pixel_delta_v, const point3 camera_center, const hittable *const *d_world) {
     const uint32_t i = threadIdx.x + blockIdx.x * blockDim.x;
     const uint32_t j = threadIdx.y + blockIdx.y * blockDim.y;
     if (i >= max_x || j >= max_y) {
@@ -40,9 +43,37 @@ __global__ void render(float4 *fb, const int max_x, const int max_y, const point
     const vec3 ray_direction = pixel_center - camera_center;
     const ray  r(camera_center, ray_direction);
 
-    const vec3 ans = color(r);
+    const vec3 ans = color(r, d_world);
 
     fb[pixel_index] = make_float4(ans.e[0], ans.e[1], ans.e[2], 1.0f);
+}
+
+__global__ void create_world(hittable **d_world) {
+    if (!(threadIdx.x == 0 && blockIdx.x == 0)) {
+        return;
+    }
+
+    // Make the list
+    const auto tmp_list = new hittable_list();
+
+    // Add some spheres to the list
+    tmp_list->add(new sphere(vec3(0, 0, -1), 0.5));
+    tmp_list->add(new sphere(vec3(0, -100.5, -1), 100));
+
+    // Set the world pointer (return)
+    *d_world = tmp_list;
+}
+
+__global__ void cleanup_world(hittable **d_world) {
+    if (!(threadIdx.x == 0 && blockIdx.x == 0)) {
+        return;
+    }
+    if (!d_world || !*d_world) {
+        printf("Error: Invalid world pointer in cleanup\n");
+        return;
+    }
+    delete *d_world;
+    *d_world = nullptr;
 }
 
 int main() {
@@ -75,6 +106,16 @@ int main() {
 
     auto *fp4 = reinterpret_cast<float4 *>(fb);
 
+    // Make the heap bigger for the world creation (128MB)
+    checkCudaErrors(cudaDeviceSetLimit(cudaLimitMallocHeapSize, 1024 * 1024 * 128));
+
+    // Make the world
+    hittable **d_world;
+    checkCudaErrors(cudaMalloc(reinterpret_cast<void **>(&d_world), sizeof(hittable *)));
+    create_world<<<1, 1>>>(d_world);
+    checkCudaErrors(cudaGetLastError());
+    checkCudaErrors(cudaDeviceSynchronize());
+
     // Render
     constexpr uint32_t x_block_size = 16;
     constexpr uint32_t y_block_size = 16;
@@ -82,13 +123,13 @@ int main() {
     constexpr dim3 blocks(image_width / x_block_size + 1, image_height / y_block_size + 1);
     constexpr dim3 threads(x_block_size, y_block_size);
 
-    auto start_time = std::chrono::high_resolution_clock::now();
+    const auto start_time = std::chrono::high_resolution_clock::now();
 
     render<<<blocks, threads>>>(fp4, image_width, image_height, pixel00_loc, pixel_delta_u, pixel_delta_v,
-                                camera_center);
+                                camera_center, d_world);
     checkCudaErrors(cudaGetLastError());
-    auto end_time = std::chrono::high_resolution_clock::now();
-    auto elapsed  = end_time - start_time;
+    const auto end_time = std::chrono::high_resolution_clock::now();
+    const auto elapsed  = end_time - start_time;
     std::cout << "Render time: " << std::chrono::duration<double, std::milli>(elapsed).count() << " ms\n";
     checkCudaErrors(cudaDeviceSynchronize());
 
