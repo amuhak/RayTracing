@@ -1,13 +1,27 @@
 #include "main.cuh"
 
+__device__ bool hit_sphere(const point3 &center, const float radius, const ray &r) {
+    const vec3  oc           = center - r.origin();
+    const float a            = dot(r.direction(), r.direction());
+    const float b            = -2.0f * dot(r.direction(), oc);
+    const float c            = dot(oc, oc) - radius * radius;
+    const float discriminant = b * b - 4 * a * c;
+    return discriminant >= 0;
+}
+
+
 __device__ vec3 color(const ray &r) {
+    if (hit_sphere(point3(0, 0, -1), 0.5, r)) {
+        return {1, 0, 0};
+    }
+
     const vec3  unit_direction = unit_vector(r.direction());
     const float a              = 0.5f * (unit_direction.y() + 1.0f);
     return (1.0f - a) * vec3(1.0, 1.0, 1.0) + a * vec3(0.5, 0.7, 1.0);
 }
 
-__global__ void render(float4 *fb, int max_x, int max_y, point3 pixel00_loc, vec3 pixel_delta_u, vec3 pixel_delta_v,
-                       point3 camera_center) {
+__global__ void render(float4 *fb, const int max_x, const int max_y, const point3 pixel00_loc, const vec3 pixel_delta_u,
+                       const vec3 pixel_delta_v, const point3 camera_center) {
     const uint32_t i = threadIdx.x + blockIdx.x * blockDim.x;
     const uint32_t j = threadIdx.y + blockIdx.y * blockDim.y;
     if (i >= max_x || j >= max_y) {
