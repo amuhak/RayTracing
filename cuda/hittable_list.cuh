@@ -46,14 +46,14 @@ public:
         size++;
     }
 
-    __device__ bool hit(const ray &r, float ray_tmin, float ray_tmax, hit_record &rec) const override {
+    __device__ bool hit(const ray &r, interval ray_t, hit_record &rec) const override {
         hit_record temp_rec;
         bool       hit_anything   = false;
-        auto       closest_so_far = ray_tmax;
+        auto       closest_so_far = ray_t.max;
 
         for (size_t i = 0; i < size; i++) {
             hittable *object = d_objects[i];
-            if (object->hit(r, ray_tmin, closest_so_far, temp_rec)) {
+            if (object->hit(r, interval(ray_t.min, closest_so_far), temp_rec)) {
                 hit_anything   = true;
                 closest_so_far = temp_rec.t;
                 rec            = temp_rec;

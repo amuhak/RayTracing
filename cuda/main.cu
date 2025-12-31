@@ -20,7 +20,7 @@ __device__ float hit_sphere(const point3 &center, const float radius, const ray 
 __device__ vec3 color(const ray &r, const hittable *const *d_world) {
     const hittable &world = **d_world;
     hit_record      rec;
-    if (world.hit(r, 0, infinity, rec)) {
+    if (world.hit(r, interval(0, infinity), rec)) {
         return 0.5f * (rec.normal + vec3(1, 1, 1));
     }
 
