@@ -5,13 +5,20 @@
 #ifndef RAYTRACING_MAIN_CUH
 #define RAYTRACING_MAIN_CUH
 
-#include <iostream>
-#include <fstream>
-#include <cstdint>
 #include <chrono>
+#include <cstdint>
+#include <curand_kernel.h>
+#include <fstream>
+#include <iostream>
 
-#include "vec3.cuh"
-#include "ray.cuh"
+#include "camera.cuh"
 #include "cudaTools.cuh"
+#include "hittable.cuh"
+#include "hittable_list.cuh"
+#include "ray.cuh"
+#include "sphere.cuh"
+#include "vec3.cuh"
+#include "world.cuh"
+
 
 #endif // RAYTRACING_MAIN_CUH

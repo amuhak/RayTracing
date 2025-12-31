@@ -20,6 +20,17 @@ inline void check_cuda(cudaError_t result, char const *const func, const char *c
     }
 }
 
+__global__ void render_init(const int64_t max_x, const int64_t max_y, curandState *rand_state) {
+    const int64_t i = threadIdx.x + blockIdx.x * blockDim.x;
+    const int64_t j = threadIdx.y + blockIdx.y * blockDim.y;
+    if (i >= max_x || j >= max_y) {
+        return;
+    }
+    const int64_t pixel_index = j * max_x + i;
+    curand_init(2025, pixel_index, 0, &rand_state[pixel_index]);
+}
+
+
 constexpr float infinity = std::numeric_limits<float>::infinity();
 constexpr float pi       = std::numbers::pi_v<float>;
 

@@ -1,66 +1,4 @@
-#include "hittable.cuh"
-#include "hittable_list.cuh"
 #include "main.cuh"
-#include "sphere.cuh"
-
-__device__ vec3 color(const ray &r, const hittable *const *d_world) {
-    const hittable &world = **d_world;
-    hit_record      rec;
-    if (world.hit(r, interval(0, infinity), rec)) {
-        return 0.5f * (rec.normal + vec3(1, 1, 1));
-    }
-
-    const vec3  unit_direction = unit_vector(r.direction());
-    const float a              = 0.5f * (unit_direction.y() + 1.0f);
-    return (1.0f - a) * vec3(1.0, 1.0, 1.0) + a * vec3(0.5, 0.7, 1.0);
-}
-
-__global__ void render(float4 *fb, const int max_x, const int max_y, const point3 pixel00_loc, const vec3 pixel_delta_u,
-                       const vec3 pixel_delta_v, const point3 camera_center, const hittable *const *d_world) {
-    const uint32_t i = threadIdx.x + blockIdx.x * blockDim.x;
-    const uint32_t j = threadIdx.y + blockIdx.y * blockDim.y;
-    if (i >= max_x || j >= max_y) {
-        return;
-    }
-    const uint32_t pixel_index = (j * max_x + i);
-
-    const vec3 pixel_center =
-            pixel00_loc + pixel_delta_u * static_cast<float>(i) + pixel_delta_v * static_cast<float>(j);
-    const vec3 ray_direction = pixel_center - camera_center;
-    const ray  r(camera_center, ray_direction);
-
-    const vec3 ans = color(r, d_world);
-
-    fb[pixel_index] = make_float4(ans.e[0], ans.e[1], ans.e[2], 1.0f);
-}
-
-__global__ void create_world(hittable **d_world) {
-    if (!(threadIdx.x == 0 && blockIdx.x == 0)) {
-        return;
-    }
-
-    // Make the list
-    const auto tmp_list = new hittable_list();
-
-    // Add some spheres to the list
-    tmp_list->add(new sphere(vec3(0, 0, -1), 0.5));
-    tmp_list->add(new sphere(vec3(0, -100.5, -1), 100));
-
-    // Set the world pointer (return)
-    *d_world = tmp_list;
-}
-
-__global__ void cleanup_world(hittable **d_world) {
-    if (!(threadIdx.x == 0 && blockIdx.x == 0)) {
-        return;
-    }
-    if (!d_world || !*d_world) {
-        printf("Error: Invalid world pointer in cleanup\n");
-        return;
-    }
-    delete *d_world;
-    *d_world = nullptr;
-}
 
 int main() {
     // Image
@@ -85,6 +23,13 @@ int main() {
     constexpr auto viewport_upper_left = camera_center - vec3(0, 0, focal_length) - viewport_u / 2 - viewport_v / 2;
     constexpr auto pixel00_loc         = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
 
+    // CUDA configuration
+    constexpr uint32_t x_block_size = 16;
+    constexpr uint32_t y_block_size = 16;
+
+    constexpr dim3 blocks(image_width / x_block_size + 1, image_height / y_block_size + 1);
+    constexpr dim3 threads(x_block_size, y_block_size);
+
     float *fb{nullptr};
 
     // Allocate FB
@@ -102,17 +47,18 @@ int main() {
     checkCudaErrors(cudaGetLastError());
     checkCudaErrors(cudaDeviceSynchronize());
 
+    // Initialize the random number generator
+    curandState *d_rand_state;
+    checkCudaErrors(cudaMalloc(reinterpret_cast<void **>(&d_rand_state), number_of_pixels * sizeof(curandState)));
+    render_init<<<blocks, threads>>>(image_width, image_height, d_rand_state);
+    checkCudaErrors(cudaGetLastError());
+    checkCudaErrors(cudaDeviceSynchronize());
+
     // Render
-    constexpr uint32_t x_block_size = 16;
-    constexpr uint32_t y_block_size = 16;
-
-    constexpr dim3 blocks(image_width / x_block_size + 1, image_height / y_block_size + 1);
-    constexpr dim3 threads(x_block_size, y_block_size);
-
     const auto start_time = std::chrono::high_resolution_clock::now();
 
     render<<<blocks, threads>>>(fp4, image_width, image_height, pixel00_loc, pixel_delta_u, pixel_delta_v,
-                                camera_center, d_world);
+                                camera_center, d_world, d_rand_state);
     checkCudaErrors(cudaGetLastError());
     const auto end_time = std::chrono::high_resolution_clock::now();
     const auto elapsed  = end_time - start_time;
