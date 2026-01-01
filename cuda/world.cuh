@@ -20,13 +20,15 @@ __global__ void create_world(hittable **d_world) {
     // Define materials
     auto material_ground = new lambertian(vec3(0.8, 0.8, 0.0));
     auto material_center = new lambertian(vec3(0.1, 0.2, 0.5));
-    auto material_left   = new metal(vec3(0.8, 0.8, 0.8), 0.3f);
+    auto material_left   = new dielectric(1.5f);
+    auto material_bubble = new dielectric(1.00f / 1.50f);
     auto material_right  = new metal(vec3(0.8, 0.6, 0.2), 1.0f);
 
     // Add spheres to the list
     tmp_list->add(new sphere(vec3(0, -100.5, -1), 100, material_ground));
     tmp_list->add(new sphere(vec3(0, 0, -1.2), 0.5, material_center));
     tmp_list->add(new sphere(vec3(-1, 0, -1), 0.5, material_left));
+    tmp_list->add(new sphere(vec3(-1, 0, -1), 0.4, material_bubble));
     tmp_list->add(new sphere(vec3(1, 0, -1), 0.5, material_right));
 
     // Set the world pointer (return)

@@ -163,4 +163,12 @@ __device__ inline vec3 reflect(const vec3 &v, const vec3 &n) {
     return v - 2 * dot(v, n) * n;
 }
 
+__device__ inline vec3 refract(const vec3 &uv, const vec3 &n, const float etai_over_etat) {
+    const float cos_theta      = std::fminf(dot(-uv, n), 1.0f);
+    vec3        r_out_perp     = etai_over_etat * (uv + cos_theta * n);
+    vec3        r_out_parallel = -std::sqrtf(std::fabsf(1.0f - r_out_perp.length_squared())) * n;
+    return r_out_perp + r_out_parallel;
+}
+
+
 #endif // RAYTRACING_VEC3_CUH

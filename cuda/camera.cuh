@@ -27,7 +27,7 @@ __device__ vec3 color(const ray &r, const hittable *const *d_world, curandState 
         }
         ray  scattered;
         vec3 attenuation;
-        if (rec.mat->scatter(r, rec, attenuation, scattered, rand_state)) {
+        if (rec.mat->scatter(r_copy, rec, attenuation, scattered, rand_state)) {
             r_copy = scattered;
             ans    = ans * attenuation;
         } else {
