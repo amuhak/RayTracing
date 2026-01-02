@@ -9,6 +9,7 @@
 #include "interval.cuh"
 #include "material.cuh"
 #include "ray.cuh"
+#include "vec3.cuh"
 
 constexpr int    samples_per_pixel   = 100;
 constexpr float  pixel_samples_scale = 1.0f / static_cast<float>(samples_per_pixel);
@@ -16,8 +17,17 @@ constexpr int    max_depth           = 50;
 constexpr float  vfov                = 20;
 constexpr point3 lookfrom{-2, 2, 1};
 constexpr point3 lookat{0, 0, -1};
-constexpr vec3   vup{0, 1, 0}; // Camera-relative "up" direction
+constexpr vec3   vup{0, 1, 0};       // Camera-relative "up" direction
+constexpr float  defocus_angle = 10;  // Variation angle of rays through each pixel
+constexpr float  focus_dist    = 3.5; // Distance from camera lookfrom point to plane of perfect focus
 
+
+__device__ point3 defocus_disk_sample(const point3 camera_center, const vec3 defocus_disk_u, const vec3 defocus_disk_v,
+                                      curandState &rand_state) {
+    // Returns a random point in the camera defocus disk.
+    auto p = random_in_unit_disk(rand_state);
+    return camera_center + p[0] * defocus_disk_u + p[1] * defocus_disk_v;
+}
 
 __device__ vec3 color(const ray &r, const hittable *const *d_world, curandState &rand_state) {
     const hittable &world  = **d_world;
@@ -50,12 +60,15 @@ __device__ vec3 color(const ray &r, const hittable *const *d_world, curandState 
 }
 
 __device__ ray get_ray(const uint32_t i, const uint32_t j, const point3 pixel00_loc, const vec3 pixel_delta_u,
-                       const vec3 pixel_delta_v, const point3 camera_center, curandState &rand_state) {
+                       const vec3 pixel_delta_v, const point3 camera_center, const vec3 defocus_disk_u,
+                       const vec3 defocus_disk_v, curandState &rand_state) {
 
     vec3 offset{curand_uniform(&rand_state) - 0.5f, curand_uniform(&rand_state) - 0.5f, 0};
     auto pixel_sample = pixel00_loc + (i + offset.x()) * pixel_delta_u + (j + offset.y()) * pixel_delta_v;
 
-    auto ray_origin    = camera_center;
+    auto ray_origin    = defocus_angle <= 0
+                                 ? camera_center
+                                 : defocus_disk_sample(camera_center, defocus_disk_u, defocus_disk_v, rand_state);
     auto ray_direction = pixel_sample - ray_origin;
 
     return {ray_origin, ray_direction};
@@ -63,8 +76,8 @@ __device__ ray get_ray(const uint32_t i, const uint32_t j, const point3 pixel00_
 
 
 __global__ void render(float4 *fb, const int max_x, const int max_y, const point3 pixel00_loc, const vec3 pixel_delta_u,
-                       const vec3 pixel_delta_v, const point3 camera_center, const hittable *const *d_world,
-                       curandState *d_rand_state) {
+                       const vec3 pixel_delta_v, const point3 camera_center, const vec3 defocus_disk_u,
+                       const vec3 defocus_disk_v, const hittable *const *d_world, curandState *d_rand_state) {
     const uint32_t i = threadIdx.x + blockIdx.x * blockDim.x;
     const uint32_t j = threadIdx.y + blockIdx.y * blockDim.y;
     if (i >= max_x || j >= max_y) {
@@ -74,7 +87,8 @@ __global__ void render(float4 *fb, const int max_x, const int max_y, const point
     curandState   &rand_state  = d_rand_state[pixel_index];
     vec3           pixel_color(0, 0, 0);
     for (int sample = 0; sample < samples_per_pixel; sample++) {
-        ray r = get_ray(i, j, pixel00_loc, pixel_delta_u, pixel_delta_v, camera_center, rand_state);
+        ray r = get_ray(i, j, pixel00_loc, pixel_delta_u, pixel_delta_v, camera_center, defocus_disk_u, defocus_disk_v,
+                        rand_state);
         pixel_color += color(r, d_world, rand_state);
     }
     const auto ans = pixel_samples_scale * pixel_color;

@@ -6,10 +6,9 @@ float gamma_fix(const float input) {
 
 int main() {
     // Image
-    float              focal_length     = (lookfrom - lookat).length();
-    auto               theta            = degrees_to_radians(vfov);
-    auto               h                = std::tan(theta / 2);
-    auto               viewport_height  = 2 * h * focal_length;
+    float              theta            = degrees_to_radians(vfov);
+    auto               h                = std::tanf(theta / 2);
+    auto               viewport_height  = 2 * h * focus_dist;
     constexpr float    aspect_ratio     = 16.0f / 9.0f;
     constexpr uint32_t image_width      = 1920;
     constexpr uint32_t image_height     = std::max(1, static_cast<int>(image_width / aspect_ratio));
@@ -31,8 +30,13 @@ int main() {
     auto pixel_delta_v = viewport_v / image_height;
 
     // Calculate the location of the upper left pixel.
-    auto viewport_upper_left = lookfrom - (focal_length * w) - viewport_u / 2 - viewport_v / 2;
+    auto viewport_upper_left = camera_center - (focus_dist * w) - viewport_u / 2 - viewport_v / 2;
     auto pixel00_loc         = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+
+    // Calculate the camera defocus disk basis vectors.
+    float defocus_radius = focus_dist * std::tanf(degrees_to_radians(defocus_angle / 2));
+    auto  defocus_disk_u = u * defocus_radius;
+    auto  defocus_disk_v = v * defocus_radius;
 
 
     // CUDA configuration
@@ -70,7 +74,7 @@ int main() {
     const auto start_time = std::chrono::high_resolution_clock::now();
 
     render<<<blocks, threads>>>(fp4, image_width, image_height, pixel00_loc, pixel_delta_u, pixel_delta_v,
-                                camera_center, d_world, d_rand_state);
+                                camera_center, defocus_disk_u, defocus_disk_v, d_world, d_rand_state);
     checkCudaErrors(cudaGetLastError());
     checkCudaErrors(cudaDeviceSynchronize());
 

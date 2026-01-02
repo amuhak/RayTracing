@@ -170,5 +170,13 @@ __device__ inline vec3 refract(const vec3 &uv, const vec3 &n, const float etai_o
     return r_out_perp + r_out_parallel;
 }
 
+__device__ inline vec3 random_in_unit_disk(curandState &rand_state) {
+    auto  r     = sqrt(vec3::random_float(rand_state)); // Sqrt compensates for area
+    auto  theta = vec3::random_float(0, 2 * pi, rand_state);
+    float x, y;
+    __sincosf(theta, &y, &x);
+    return {r * x, r * y, 0};
+}
+
 
 #endif // RAYTRACING_VEC3_CUH
