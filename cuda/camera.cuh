@@ -11,15 +11,15 @@
 #include "ray.cuh"
 #include "vec3.cuh"
 
-constexpr int    samples_per_pixel   = 100;
+constexpr int    samples_per_pixel   = 1;
 constexpr float  pixel_samples_scale = 1.0f / static_cast<float>(samples_per_pixel);
 constexpr int    max_depth           = 50;
 constexpr float  vfov                = 20;
-constexpr point3 lookfrom{-2, 2, 1};
-constexpr point3 lookat{0, 0, -1};
-constexpr vec3   vup{0, 1, 0};       // Camera-relative "up" direction
-constexpr float  defocus_angle = 10;  // Variation angle of rays through each pixel
-constexpr float  focus_dist    = 3.5; // Distance from camera lookfrom point to plane of perfect focus
+constexpr point3 lookfrom{13, 2, 3};
+constexpr point3 lookat{0, 0, 0};
+constexpr vec3   vup{0, 1, 0};        // Camera-relative "up" direction
+constexpr float  defocus_angle = 0.6; // Variation angle of rays through each pixel
+constexpr float  focus_dist    = 10;  // Distance from camera lookfrom point to plane of perfect focus
 
 
 __device__ point3 defocus_disk_sample(const point3 camera_center, const vec3 defocus_disk_u, const vec3 defocus_disk_v,

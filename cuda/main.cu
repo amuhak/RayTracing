@@ -7,8 +7,8 @@ float gamma_fix(const float input) {
 int main() {
     // Image
     float              theta            = degrees_to_radians(vfov);
-    auto               h                = std::tanf(theta / 2);
-    auto               viewport_height  = 2 * h * focus_dist;
+    float              h                = std::tanf(theta / 2);
+    float              viewport_height  = 2 * h * focus_dist;
     constexpr float    aspect_ratio     = 16.0f / 9.0f;
     constexpr uint32_t image_width      = 1920;
     constexpr uint32_t image_height     = std::max(1, static_cast<int>(image_width / aspect_ratio));
@@ -56,17 +56,17 @@ int main() {
     // Make the heap bigger for the world creation (128MB)
     checkCudaErrors(cudaDeviceSetLimit(cudaLimitMallocHeapSize, 1024 * 1024 * 128));
 
-    // Make the world
-    hittable **d_world;
-    checkCudaErrors(cudaMalloc(reinterpret_cast<void **>(&d_world), sizeof(hittable *)));
-    create_world<<<1, 1>>>(d_world);
-    checkCudaErrors(cudaGetLastError());
-    checkCudaErrors(cudaDeviceSynchronize());
-
     // Initialize the random number generator
     curandState *d_rand_state;
     checkCudaErrors(cudaMalloc(reinterpret_cast<void **>(&d_rand_state), number_of_pixels * sizeof(curandState)));
     render_init<<<blocks, threads>>>(image_width, image_height, d_rand_state);
+    checkCudaErrors(cudaGetLastError());
+    checkCudaErrors(cudaDeviceSynchronize());
+
+    // Make the world
+    hittable **d_world;
+    checkCudaErrors(cudaMalloc(reinterpret_cast<void **>(&d_world), sizeof(hittable *)));
+    create_world<<<1, 1>>>(d_world, d_rand_state);
     checkCudaErrors(cudaGetLastError());
     checkCudaErrors(cudaDeviceSynchronize());
 
