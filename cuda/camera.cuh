@@ -10,9 +10,14 @@
 #include "material.cuh"
 #include "ray.cuh"
 
-constexpr int   samples_per_pixel   = 100;
-constexpr float pixel_samples_scale = 1.0f / static_cast<float>(samples_per_pixel);
-constexpr int   max_depth           = 50;
+constexpr int    samples_per_pixel   = 100;
+constexpr float  pixel_samples_scale = 1.0f / static_cast<float>(samples_per_pixel);
+constexpr int    max_depth           = 50;
+constexpr float  vfov                = 20;
+constexpr point3 lookfrom{-2, 2, 1};
+constexpr point3 lookat{0, 0, -1};
+constexpr vec3   vup{0, 1, 0}; // Camera-relative "up" direction
+
 
 __device__ vec3 color(const ray &r, const hittable *const *d_world, curandState &rand_state) {
     const hittable &world  = **d_world;

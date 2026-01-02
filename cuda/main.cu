@@ -6,26 +6,34 @@ float gamma_fix(const float input) {
 
 int main() {
     // Image
-    constexpr float    viewport_height  = 2.0;
-    constexpr float    focal_length     = 1.0;
+    float              focal_length     = (lookfrom - lookat).length();
+    auto               theta            = degrees_to_radians(vfov);
+    auto               h                = std::tan(theta / 2);
+    auto               viewport_height  = 2 * h * focal_length;
     constexpr float    aspect_ratio     = 16.0f / 9.0f;
     constexpr uint32_t image_width      = 1920;
     constexpr uint32_t image_height     = std::max(1, static_cast<int>(image_width / aspect_ratio));
     constexpr uint32_t number_of_pixels = image_width * image_height;
     constexpr uint32_t buffer_size      = number_of_pixels * 4;
-    constexpr float    viewport_width   = viewport_height * (static_cast<float>(image_width) / image_height);
-    constexpr auto     camera_center    = point3(0, 0, 0);
+    float              viewport_width   = viewport_height * (static_cast<float>(image_width) / image_height);
+    constexpr auto     camera_center    = lookfrom;
+
     // Calculate the vectors across the horizontal and down the vertical viewport edges.
-    constexpr auto viewport_u = vec3(viewport_width, 0, 0);
-    constexpr auto viewport_v = vec3(0, -viewport_height, 0);
+    auto w = unit_vector(lookfrom - lookat);
+    auto u = unit_vector(cross(vup, w));
+    auto v = cross(w, u);
+
+    auto viewport_u = viewport_width * u;
+    auto viewport_v = viewport_height * -v;
 
     // Calculate the horizontal and vertical delta vectors from pixel to pixel.
-    constexpr auto pixel_delta_u = viewport_u / image_width;
-    constexpr auto pixel_delta_v = viewport_v / image_height;
+    auto pixel_delta_u = viewport_u / image_width;
+    auto pixel_delta_v = viewport_v / image_height;
 
     // Calculate the location of the upper left pixel.
-    constexpr auto viewport_upper_left = camera_center - vec3(0, 0, focal_length) - viewport_u / 2 - viewport_v / 2;
-    constexpr auto pixel00_loc         = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+    auto viewport_upper_left = lookfrom - (focal_length * w) - viewport_u / 2 - viewport_v / 2;
+    auto pixel00_loc         = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+
 
     // CUDA configuration
     constexpr uint32_t x_block_size = 16;
